@@ -106,11 +106,46 @@ useTooltip(buttonEl, async (showing) => {
 	padding: 0 6px;
 	border-radius: 4px;
 
+	--reactbtn-img: 32px;
+  --reactbtn-gap: 4px;
+
+	background-color: transparent;
+  color: var(--fgTransparentWeak);
+  margin: 2px !important;
+  padding: 0 !important;
+  height: var(--reactbtn-img, 32px) !important;
+  display: inline-flex !important;
+  align-items: center;
+  overflow: hidden;
+
+	& img {
+		background-color: #fff;
+		padding: 4px;
+		height: 100% !important;
+		min-width: var(--reactbtn-img, 32px) !important;
+		border-radius: 4px;
+		box-sizing: border-box;
+		filter: none;
+	}
+
 	&.canToggle {
 		background: var(--buttonBg);
 
+		background-color: var(--bg);
+		color: var(--fg);
+		box-shadow: 1px 1px 2px 0px rgb(0 0 0 / 25%);
+
+		&.icon {
+			box-shadow: 0 0 2px 0px rgb(0 0 0 / 25%);
+		}
+
 		&:hover {
 			background: rgba(0, 0, 0, 0.1);
+
+			&.reacted {
+				background-color: var(--accent);
+				color: var(--fgOnAccent);
+			}
 		}
 	}
 
@@ -139,5 +174,9 @@ useTooltip(buttonEl, async (showing) => {
 	font-size: 0.9em;
 	line-height: 32px;
 	margin: 0 0 0 4px;
+
+	color: inherit;
+  margin: 0 clamp(6px, var(--reactbtn-count, calc(var(--reactbtn-img, 32px) / 4)), 16px) !important;
+  font-size: 0.9em;
 }
 </style>
