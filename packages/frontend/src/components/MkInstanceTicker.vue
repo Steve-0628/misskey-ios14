@@ -38,43 +38,44 @@ const bg = {
 $height: 2ex;
 
 .root {
-	display: flex;
-	align-items: center;
-	height: $height;
-	border-radius: 4px 0 0 4px;
-	overflow: clip;
+	// display: flex;
+	// align-items: center;
+	// height: $height;
+	// border-radius: 4px 0 0 4px;
+	// overflow: clip;
 	color: #fff;
-	text-shadow: /* .866 ≈ sin(60deg) */
-		1px 0 1px #000,
-		.866px .5px 1px #000,
-		.5px .866px 1px #000,
-		0 1px 1px #000,
-		-.5px .866px 1px #000,
-		-.866px .5px 1px #000,
-		-1px 0 1px #000,
-		-.866px -.5px 1px #000,
-		-.5px -.866px 1px #000,
-		0 -1px 1px #000,
-		.5px -.866px 1px #000,
-		.866px -.5px 1px #000;
-	mask-image: linear-gradient(90deg,
-		rgb(0,0,0),
-		rgb(0,0,0) calc(100% - 16px),
-		rgba(0,0,0,0) 100%
-	);
+	display: block;
+  mask-image: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 14px;
+  height: 100%;
+  border-radius: unset;
+  overflow: hidden;
 }
 
 .icon {
-	height: $height;
-	flex-shrink: 0;
+	// height: $height;
+	// flex-shrink: 0;
+	width: 100%;
+  height: auto;
 }
 
 .name {
-	margin-left: 4px;
+	// margin-left: 4px;
 	line-height: 1;
 	font-size: 0.9em;
 	font-weight: bold;
-	white-space: nowrap;
-	overflow: visible;
+	// white-space: nowrap;
+	// overflow: visible;
+	display: inline-block;
+  height: calc(100% - 14px);
+  line-height: 14px;
+  margin-left: 0;
+  writing-mode: vertical-lr;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>
