@@ -34,7 +34,7 @@ globalThis.addEventListener('fetch', ev => {
 	if (!isHTMLRequest) return;
 	ev.respondWith(
 		fetch(ev.request)
-			.catch(() => new Response(`Offline. Service Worker @${_VERSION_}`, { status: 200 })),
+			.catch(() => new Response(`<!DOCTYPE html><html><head><title>Offline</title><script>document.addEventListener('click',()=>{location.reload();});</script><style>body {font-family:monospace;color:white;background:#1c1b22;}</style></head><body>Offline. Service Worker @${_VERSION_}<br>Click anywhere to reload.</body></html>`, { status: 200, headers: { 'Content-Type': 'text/html' } })),
 	);
 });
 
