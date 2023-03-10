@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "13.9.2-steskey-v3",
+	"version": "13.9.2-steskey-v4-beta",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
