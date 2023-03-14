@@ -1,5 +1,5 @@
 <template>
-<MkPostForm class="_panel mkw-post-form data-cy-mkw-postForm" :fixed="true" :autofocus="false"/>
+<MkPostForm class="_panel mkw-post-form data-cy-mkw-postForm" :fixed="true" :autofocus="false" :isWidget="true"/>
 </template>
 
 <script lang="ts" setup>

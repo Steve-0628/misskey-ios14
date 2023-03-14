@@ -116,6 +116,7 @@ const props = withDefaults(defineProps<{
 	fixed?: boolean;
 	autofocus?: boolean;
 	freezeAfterPosted?: boolean;
+	isWidget?: boolean;
 }>(), {
 	initialVisibleUsers: () => [],
 	autofocus: true,
@@ -355,6 +356,7 @@ function addTag(tag: string) {
 }
 
 function focus() {
+	console.log(textareaEl);
 	if (textareaEl) {
 		textareaEl.focus();
 		textareaEl.setSelectionRange(textareaEl.value.length, textareaEl.value.length);
@@ -684,13 +686,21 @@ async function post(ev?: MouseEvent) {
 				claimAchievement('postedAt0min0sec');
 			}
 		});
-	}).catch(err => {
-		posting = false;
-		os.alert({
-			type: 'error',
-			text: err.message + '\n' + (err as any).id,
+	})
+		.then(() => {
+			if (props.isWidget) {
+				setTimeout(() => {
+					focus();
+				}, 10);
+			}
+		})
+		.catch(err => {
+			posting = false;
+			os.alert({
+				type: 'error',
+				text: err.message + '\n' + (err as any).id,
+			});
 		});
-	});
 }
 
 function cancel() {
