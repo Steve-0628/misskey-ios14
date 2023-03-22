@@ -368,7 +368,6 @@ function addTag(tag: string) {
 }
 
 function focus() {
-	console.log(textareaEl);
 	if (textareaEl) {
 		textareaEl.focus();
 		textareaEl.setSelectionRange(textareaEl.value.length, textareaEl.value.length);
