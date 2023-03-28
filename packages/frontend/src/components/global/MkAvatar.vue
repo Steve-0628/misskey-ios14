@@ -2,18 +2,10 @@
 <component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
-	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: useBlurEffect }]">
-		<div :class="$style.earLeft">
-			<div v-if="useBlurEffect" :class="$style.layer">
-				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
-			</div>
-		</div>
-		<div :class="$style.earRight">
-			<div v-if="useBlurEffect" :class="$style.layer">
-				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
-			</div>
-		</div>
-	</div>
+	<template v-if="user.isCat">
+			<div :class="$style.earLeft" />
+			<div :class="$style.earRight" />
+	</template>
 </component>
 </template>
 
@@ -28,7 +20,6 @@ import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
 import { defaultStore } from '@/store';
 
 const squareAvatars = $ref(defaultStore.state.squareAvatars);
-const useBlurEffect = $ref(defaultStore.state.useBlurEffect);
 
 const props = withDefaults(defineProps<{
 	user: misskey.entities.User;
@@ -127,113 +118,42 @@ watch(() => props.user.avatarBlurhash, () => {
 }
 
 .cat {
-	> .ears {
+	> .earLeft,
+	> .earRight {
 		contain: strict;
-		position: absolute;
-		top: -50%;
-		left: -50%;
-		width: 100%;
-		height: 100%;
-		padding: 50%;
+		display: inline-block;
+		height: 50%;
+		width: 50%;
+		background: currentColor;
 
-		&.mask {
-			-webkit-mask:
-				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><filter id="a"><feGaussianBlur in="SourceGraphic" stdDeviation="1"/></filter><circle cx="16" cy="16" r="15" filter="url(%23a)"/></svg>') center / 50% 50%,
-				linear-gradient(#fff, #fff);
-			-webkit-mask-composite: destination-out, source-over;
-			mask:
-				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><filter id="a"><feGaussianBlur in="SourceGraphic" stdDeviation="1"/></filter><circle cx="16" cy="16" r="15" filter="url(%23a)"/></svg>') exclude center / 50% 50%,
-				linear-gradient(#fff, #fff); // polyfill of `image(#fff)`
-		}
-
-		> .earLeft,
-		> .earRight {
+		&::before {
 			contain: strict;
-			display: inline-block;
-			height: 50%;
-			width: 50%;
-			background: currentColor;
-
-			&::after {
-				contain: strict;
-				content: '';
-				display: block;
-				width: 60%;
-				height: 60%;
-				margin: 20%;
-				background: #df548f;
-			}
-
-			> .layer {
-				contain: strict;
-				position: absolute;
-				top: 0;
-				width: 280%;
-				height: 280%;
-
-				> .plot {
-					contain: strict;
-					width: 100%;
-					height: 100%;
-					clip-path: path('M0 0H1V1H0z');
-					transform: scale(32767);
-					transform-origin: 0 0;
-				}
-			}
-		}
-
-		> .earLeft {
-			transform: rotate(37.5deg) skew(30deg);
-
-			&, &::after {
-				border-radius: 0 75% 75%;
-			}
-
-			> .layer {
-				left: 0;
-				transform:
-					skew(-30deg)
-					rotate(-37.5deg)
-					translate(-2.82842712475%, /* -2 * sqrt(2) */
-										-38.5857864376%); /* 40 - 2 * sqrt(2) */
-
-				> .plot {
-					background-position: 20% 10%; /* ~= 37.5deg */
-				}
-			}
-		}
-
-		> .earRight {
-			transform: rotate(-37.5deg) skew(-30deg);
-
-			&, &::after {
-				border-radius: 75% 0 75% 75%;
-			}
-
-			> .layer {
-				right: 0;
-				transform:
-					skew(30deg)
-					rotate(37.5deg)
-					translate(2.82842712475%, /* 2 * sqrt(2) */
-										-38.5857864376%); /* 40 - 2 * sqrt(2) */
-
-				> .plot {
-					background-position: 80% 10%; /* ~= 37.5deg */
-				}
-			}
+			content: '';
+			display: block;
+			width: 60%;
+			height: 60%;
+			margin: 20%;
+			background: #df548f;
 		}
 	}
 
-	&:hover {
-		> .ears {
-			> .earLeft {
-				animation: earwiggleleft 1s infinite;
-			}
+	> .earLeft {
+		border-radius: 0 75% 75%;
+		transform: rotate(37.5deg) skew(30deg);
+	}
 
-			> .earRight {
-				animation: earwiggleright 1s infinite;
-			}
+	> .earRight {
+		border-radius: 75% 0 75% 75%;
+		transform: rotate(-37.5deg) skew(-30deg);
+	}
+
+	&:hover {
+		> .earLeft {
+			animation: earwiggleleft 1s infinite;
+		}
+
+		> .earRight {
+			animation: earwiggleright 1s infinite;
 		}
 	}
 }
