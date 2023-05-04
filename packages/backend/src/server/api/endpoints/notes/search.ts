@@ -84,6 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					attributesToRetrieve: ['id', 'createdAt'],
 					matchingStrategy: 'all',
 					page: ps.page,
+					hitsPerPage: ps.limit,
 				});
 
 				const fastNotes: Note[] = [];
