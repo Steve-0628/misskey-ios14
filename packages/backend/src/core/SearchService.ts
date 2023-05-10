@@ -96,7 +96,7 @@ export class SearchService {
 	@bindThis
 	public async indexNote(note: Note): Promise<void> {
 		if (note.text == null && note.cw == null) return;
-		if (!['home', 'public'].includes(note.visibility)) return;
+		// if (!['home', 'public'].includes(note.visibility)) return;
 
 		if (this.meilisearch) {
 			this.meilisearchNoteIndex!.addDocuments([{
@@ -147,10 +147,32 @@ export class SearchService {
 				limit: pagination.limit,
 			});
 			if (res.hits.length === 0) return [];
-			const notes = await this.notesRepository.findBy({
-				id: In(res.hits.map(x => x.id)),
-			});
-			return notes.sort((a, b) => a.id > b.id ? -1 : 1);
+			// const notes = await this.notesRepository.findBy({
+			// 	id: In(res.hits.map(x => x.id)),
+			// });
+			// return notes.sort((a, b) => a.id > b.id ? -1 : 1);
+			const fastNotes: Note[] = [];
+			for (const [, v] of Object.entries(res.hits)) {
+				const query = this.notesRepository.createQueryBuilder('note');
+				query.andWhere('note.id = :id', { id: v.id })				
+					.innerJoinAndSelect('note.user', 'user')
+					.leftJoinAndSelect('note.reply', 'reply')
+					.leftJoinAndSelect('note.renote', 'renote')
+					.leftJoinAndSelect('reply.user', 'replyUser')
+					.leftJoinAndSelect('renote.user', 'renoteUser');
+
+				this.queryService.generateVisibilityQuery(query, me);
+				if (me) {
+					this.queryService.generateMutedUserQuery(query, me);
+					this.queryService.generateBlockedUserQuery(query, me);
+				}
+				const note = await query.getOne();
+				if (note) {
+					fastNotes.push(note);
+				}
+			}
+
+			return fastNotes;
 		} else {
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), pagination.sinceId, pagination.untilId);
 
