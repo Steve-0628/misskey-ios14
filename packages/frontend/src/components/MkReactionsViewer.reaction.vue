@@ -43,7 +43,7 @@ const alternative: ComputedRef<string | null> = computed(() => customEmojis.valu
 
 const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
 
-const toggleReaction = (ev) => {
+const toggleReaction = async (ev) => {
 	if (!canToggle.value) {
 		chooseAlternative(ev);
 		return;

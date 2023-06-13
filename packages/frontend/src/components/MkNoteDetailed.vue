@@ -34,6 +34,7 @@
 		</div>
 	</div>
 	<article :class="$style.note" @contextmenu.stop="onContextmenu">
+		<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
 		<header :class="$style.noteHeader">
 			<MkAvatar :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link preview/>
 			<div :class="$style.noteHeaderBody">
@@ -52,7 +53,7 @@
 					</div>
 				</div>
 				<div :class="$style.noteHeaderUsername"><MkAcct :user="appearNote.user"/></div>
-				<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
+				
 			</div>
 		</header>
 		<div :class="$style.noteContent">
