@@ -9,3 +9,5 @@
 - 投稿フォームを下の方に
 - MeiliSearchですべての投稿をインデックスするように
 - ZenUIを無効化
+- DLSite
+- KaTeXを差し戻し
