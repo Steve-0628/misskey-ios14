@@ -8,3 +8,4 @@
 - Annoying (過剰MFM警告) をPublicのときのみに
 - 投稿フォームを下の方に
 - MeiliSearchですべての投稿をインデックスするように
+- ZenUIを無効化
