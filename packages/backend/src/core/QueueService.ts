@@ -1,5 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
+import { v4 as uuid } from 'uuid';
+import Bull from 'bull';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
@@ -10,7 +12,6 @@ import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, RelationshipQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
 import type { DbJobData, DeliverJobData, RelationshipJobData, ThinUser } from '../queue/types.js';
 import type httpSignature from '@peertube/http-signature';
-import type * as Bull from 'bullmq';
 
 @Injectable()
 export class QueueService {
@@ -26,43 +27,7 @@ export class QueueService {
 		@Inject('queue:relationship') public relationshipQueue: RelationshipQueue,
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
-	) {
-		this.systemQueue.add('tickCharts', {
-		}, {
-			repeat: { pattern: '55 * * * *' },
-			removeOnComplete: true,
-		});
-
-		this.systemQueue.add('resyncCharts', {
-		}, {
-			repeat: { pattern: '0 0 * * *' },
-			removeOnComplete: true,
-		});
-
-		this.systemQueue.add('cleanCharts', {
-		}, {
-			repeat: { pattern: '0 0 * * *' },
-			removeOnComplete: true,
-		});
-
-		this.systemQueue.add('aggregateRetention', {
-		}, {
-			repeat: { pattern: '0 0 * * *' },
-			removeOnComplete: true,
-		});
-
-		this.systemQueue.add('clean', {
-		}, {
-			repeat: { pattern: '0 0 * * *' },
-			removeOnComplete: true,
-		});
-
-		this.systemQueue.add('checkExpiredMutings', {
-		}, {
-			repeat: { pattern: '*/5 * * * *' },
-			removeOnComplete: true,
-		});
-	}
+	) {}
 
 	@bindThis
 	public deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean) {
@@ -80,29 +45,9 @@ export class QueueService {
 
 		return this.deliverQueue.add(to, data, {
 			attempts: this.config.deliverJobMaxAttempts ?? 12,
+			timeout: 1 * 60 * 1000,	// 1min
 			backoff: {
-				type: 'custom',
-			},
-			removeOnComplete: true,
-			removeOnFail: true,
-		});
-	}
-
-	/**
-	 * ApDeliverManager-DeliverManager.execute()からinboxesを突っ込んでaddBulkしたい
-	 * @param user `{ id: string; }` この関数ではThinUserに変換しないので前もって変換してください
-	 * @param content IActivity | null
-	 * @param inboxes `Map<string, boolean>` / key: to (inbox url), value: isSharedInbox (whether it is sharedInbox)
-	 * @returns void
-	 */
-	@bindThis
-	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>) {
-		if (content == null) return null;
-
-		const opts = {
-			attempts: this.config.deliverJobMaxAttempts ?? 12,
-			backoff: {
-				type: 'custom',
+				type: 'apBackoff',
 			},
 			removeOnComplete: true,
 			removeOnFail: true,
@@ -129,10 +74,11 @@ export class QueueService {
 			signature,
 		};
 
-		return this.inboxQueue.add('', data, {
+		return this.inboxQueue.add(data, {
 			attempts: this.config.inboxJobMaxAttempts ?? 8,
+			timeout: 5 * 60 * 1000,	// 5min
 			backoff: {
-				type: 'custom',
+				type: 'apBackoff',
 			},
 			removeOnComplete: true,
 			removeOnFail: true,
@@ -280,7 +226,7 @@ export class QueueService {
 	private generateToDbJobData<T extends 'importFollowingToDb' | 'importBlockingToDb', D extends DbJobData<T>>(name: T, data: D): {
 		name: string,
 		data: D,
-		opts: Bull.JobsOptions,
+		opts: Bull.JobOptions,
 	} {
 		return {
 			name,
@@ -367,10 +313,10 @@ export class QueueService {
 	}
 
 	@bindThis
-	private generateRelationshipJobData(name: 'follow' | 'unfollow' | 'block' | 'unblock', data: RelationshipJobData, opts: Bull.JobsOptions = {}): {
+	private generateRelationshipJobData(name: 'follow' | 'unfollow' | 'block' | 'unblock', data: RelationshipJobData, opts: Bull.JobOptions = {}): {
 		name: string,
 		data: RelationshipJobData,
-		opts: Bull.JobsOptions,
+		opts: Bull.JobOptions,
 	} {
 		return {
 			name,
@@ -419,10 +365,11 @@ export class QueueService {
 			eventId: randomUUID(),
 		};
 
-		return this.webhookDeliverQueue.add(webhook.id, data, {
+		return this.webhookDeliverQueue.add(data, {
 			attempts: 4,
+			timeout: 1 * 60 * 1000,	// 1min
 			backoff: {
-				type: 'custom',
+				type: 'apBackoff',
 			},
 			removeOnComplete: true,
 			removeOnFail: true,
@@ -434,11 +381,11 @@ export class QueueService {
 		this.deliverQueue.once('cleaned', (jobs, status) => {
 			//deliverLogger.succ(`Cleaned ${jobs.length} ${status} jobs`);
 		});
-		this.deliverQueue.clean(0, 0, 'delayed');
+		this.deliverQueue.clean(0, 'delayed');
 
 		this.inboxQueue.once('cleaned', (jobs, status) => {
 			//inboxLogger.succ(`Cleaned ${jobs.length} ${status} jobs`);
 		});
-		this.inboxQueue.clean(0, 0, 'delayed');
+		this.inboxQueue.clean(0, 'delayed');
 	}
 }
