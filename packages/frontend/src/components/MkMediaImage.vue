@@ -32,7 +32,8 @@
 			<div v-if="image.comment" :class="$style.indicator">ALT</div>
 			<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--warn);">NSFW</div>
 		</div>
-		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
+		<button v-tooltip="i18n.ts.hide" :class="$style.hide" class="_button" @click.stop.prevent="hide = true"><i class="ti ti-eye-off"></i></button>
+		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots"></i></button>
 	</template>
 </div>
 </template>
@@ -78,16 +79,9 @@ watch(() => props.image, () => {
 });
 
 function showMenu(ev: MouseEvent) {
-	os.popupMenu([{
-		text: i18n.ts.hide,
-		icon: 'ti ti-eye-off',
-		action: () => {
-			hide = true;
-		},
-	}, ...(iAmModerator ? [{
+	os.popupMenu([...(iAmModerator ? [{
 		text: i18n.ts.markAsSensitive,
-		icon: 'ti ti-eye-exclamation',
-		danger: true,
+		icon: 'ti ti-eye-off',
 		action: () => {
 			os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
 		},
@@ -128,20 +122,34 @@ function showMenu(ev: MouseEvent) {
 	background-size: 16px 16px;
 }
 
+.hide {
+	display: block;
+	position: absolute;
+	border-radius: 6px;
+	background-color: var(--accentedBg);
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+	color: var(--accent);
+	font-size: 0.8em;
+	padding: 6px 8px;
+	text-align: center;
+	top: 12px;
+	right: 12px;
+}
+
 .menu {
 	display: block;
 	position: absolute;
-	border-radius: 999px;
+	border-radius: 6px;
 	background-color: rgba(0, 0, 0, 0.3);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
 	color: #fff;
 	font-size: 0.8em;
-	width: 32px;
-	height: 32px;
+	padding: 6px 8px;
 	text-align: center;
-	bottom: 10px;
-	right: 10px;
+	bottom: 12px;
+	right: 12px;
 }
 
 .imageContainer {
@@ -158,10 +166,12 @@ function showMenu(ev: MouseEvent) {
 .indicators {
 	display: inline-flex;
 	position: absolute;
-	top: 10px;
-	left: 10px;
+	top: 12px;
+	left: 12px;
+	text-align: center;
 	pointer-events: none;
 	opacity: .5;
+	font-size: 14px;
 	gap: 6px;
 }
 
@@ -172,7 +182,7 @@ function showMenu(ev: MouseEvent) {
 	color: var(--accentLighten);
 	display: inline-block;
 	font-weight: bold;
-	font-size: 0.8em;
-	padding: 2px 5px;
+	font-size: 12px;
+	padding: 2px 6px;
 }
 </style>
