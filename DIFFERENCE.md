@@ -11,3 +11,4 @@
 - ZenUIを無効化
 - DLSite
 - KaTeXを差し戻し
+- NSFW画像のhideボタンが死ぬほど押しにくくなったのをrevert
