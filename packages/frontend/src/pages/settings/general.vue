@@ -159,12 +159,22 @@
 			<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
 		</div>
 	</FormSection>
+
+	<FormSection>
+		VRChat APIのトークンを設定
+		<MkInput v-model="username" type="text" placeholder="ユーザーネームもしくはメールアドレス"/>
+		<MkInput v-model="password" type="password" placeholder="パスワード"/>
+		<MkButton @click="setToken">決定</MkButton>
+		<MkInput v-model="twofactor" type="text" placeholder="2FAコード"/>
+		<MkButton @click="do2fa">2FA</MkButton>
+	</FormSection>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, shallowRef } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkRange from '@/components/MkRange.vue';
@@ -180,6 +190,32 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { miLocalStorage } from '@/local-storage';
+import { fetchToken } from '@/scripts/vrchat-api';
+import { defaults } from 'sanitize-html';
+
+const username = shallowRef('');
+const password = shallowRef('');
+const twofactor = shallowRef('');
+const vrchat_2fa_type = shallowRef('');
+
+async function setToken(): Promise<void> {
+	console.log(defaultStore.state.VRChatToken);
+	const resp = await fetchToken(username.value, password.value);
+	// console.log(resp.response);
+	if ("requiresTwoFactorAuth" in resp.response) {
+		vrchat_2fa_type.value = resp.response.requiresTwoFactorAuth;
+		defaultStore.set("VRChatToken", resp.response.authToken);
+		return;
+	}
+}
+
+async function do2fa(): Promise<void> {
+	return os.api('vrchat', {
+		requestType: 'email2fa',
+		token: defaultStore.state.VRChatToken,
+		twofactor: twofactor.value,
+	});
+}
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
