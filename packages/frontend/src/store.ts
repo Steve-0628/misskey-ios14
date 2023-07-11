@@ -345,6 +345,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	useDefaultNoteVisibilityOnRenote: {
 		where: 'account',
 		default: false,
+	},	
+	VRChatToken: {
+		where: 'device',
+		default: '',
 	},
 }));
 

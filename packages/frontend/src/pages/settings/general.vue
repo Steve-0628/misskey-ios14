@@ -159,17 +159,27 @@
 			<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
 		</div>
 	</FormSection>
+
+	<FormSection>
+		VRChat
+		<MkInput v-model="username" type="text" placeholder="ユーザーネームもしくはメールアドレス"/>
+		<MkInput v-model="password" type="password" placeholder="パスワード"/>
+		<MkButton @click="setToken">決定</MkButton>
+		<MkInput v-model="twofactor" type="text" placeholder="2FAコード"/>
+		<MkButton @click="do2fa">2FA</MkButton>
+	</FormSection>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, shallowRef } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkInput from '@/components/MkInput.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
@@ -180,6 +190,7 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { miLocalStorage } from '@/local-storage';
+import { fetchToken } from '@/scripts/vrchat-api';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -193,6 +204,23 @@ async function reloadAsk() {
 	if (canceled) return;
 
 	unisonReload();
+}
+
+const username = shallowRef('');
+const password = shallowRef('');
+const twofactor = shallowRef('');
+
+async function setToken(): Promise<void> {
+	const res = await fetchToken(username.value, password.value);
+	defaultStore.set('VRChatToken', res.response.authToken);
+}
+
+async function do2fa(): Promise<void> {
+	os.api('vrchat', {
+		requestType: 'email2fa',
+		token: defaultStore.state.VRChatToken,
+		twofactor: twofactor.value,
+	});
 }
 
 const overridedDeviceKind = computed(defaultStore.makeGetterSetter('overridedDeviceKind'));

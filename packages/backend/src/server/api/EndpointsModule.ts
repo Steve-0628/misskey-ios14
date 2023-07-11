@@ -337,6 +337,9 @@ import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___retention from './endpoints/retention.js';
+
+import * as ep___vrchat from './endpoints/vrchat.js';
+
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import type { Provider } from '@nestjs/common';
@@ -677,6 +680,7 @@ const $users_achievements: Provider = { provide: 'ep:users/achievements', useCla
 const $users_updateMemo: Provider = { provide: 'ep:users/update-memo', useClass: ep___users_updateMemo.default };
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
 const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
+const $vrchat: Provider = { provide: 'ep:vrchat', useClass: ep___vrchat.default };
 
 @Module({
 	imports: [
@@ -1021,6 +1025,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_updateMemo,
 		$fetchRss,
 		$retention,
+
+		$vrchat,
 	],
 	exports: [
 		$admin_meta,
@@ -1357,6 +1363,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_updateMemo,
 		$fetchRss,
 		$retention,
+		$vrchat,
 	],
 })
 export class EndpointsModule {}
