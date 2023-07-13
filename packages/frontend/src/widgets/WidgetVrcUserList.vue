@@ -9,10 +9,13 @@
 			<span>トークンを設定してください。</span>
 		</div>
 		<MkLoading v-else-if="fetching"/>
-		<div v-else class="users">
+		<div v-else-if="friends.length !== 0" class="users">
 			<span v-for="friend in friends" :key="friend.id" class="user">
 				<VRCAvatar class="avatar" :friend="friend"/>
 			</span>
+		</div>
+		<div v-else class="init">
+			<span>ワールドでオンラインのフレンドがいません。</span>
 		</div>
 	</div>
 </MkContainer>
@@ -57,7 +60,7 @@ async function fetch(): Promise<void> {
 		return;
 	}
 	const res = await getFriends();
-	friends = res.response;
+	friends = res.response.filter(f => f.location !== 'offline');
 	fetching = false;
 }
 
