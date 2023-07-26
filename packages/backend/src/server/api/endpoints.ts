@@ -339,6 +339,10 @@ import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___retention from './endpoints/retention.js';
 
 import * as ep___vrchat from './endpoints/vrchat.js';
+import * as ep___vrchat_email_2fa from './endpoints/vrchat/email-2fa.js';
+import * as ep___vrchat_friends from './endpoints/vrchat/friends.js';
+import * as ep___vrchat_instance from './endpoints/vrchat/instance.js';
+import * as ep___vrchat_user from './endpoints/vrchat/user.js';
 
 const eps = [
 	['admin/meta', ep___admin_meta],
@@ -678,6 +682,10 @@ const eps = [
 	['fetch-rss', ep___fetchRss],
 	['retention', ep___retention],
 	['vrchat', ep___vrchat],
+	['vrchat/email-2fa', ep___vrchat_email_2fa],
+	['vrchat/friends', ep___vrchat_friends],
+	['vrchat/instance', ep___vrchat_instance],
+	['vrchat/user', ep___vrchat_user],
 ];
 
 export interface IEndpointMeta {

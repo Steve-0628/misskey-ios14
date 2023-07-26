@@ -1,18 +1,56 @@
 import { Endpoints } from 'misskey-js/built/api.types';
 import { ref } from 'vue';
+import { FetchTokenRes, Friend, Instance, User } from './vrchat-api';
 import { apiUrl } from '@/config';
 import { $i } from '@/account';
 export const pendingApiRequestsCount = ref(0);
 
+type EndPoints = Endpoints & {
+	'vrchat': {
+		req: {
+			user: string;
+			password: string;
+		};
+		res: FetchTokenRes;
+	};
+	'vrchat/email-2fa': {
+		req: {
+			token: string;
+			twofactor: string;
+		};
+		res: null;
+	};
+	'vrchat/friends': {
+		req: {
+			token: string;
+		};
+		res: Friend[];
+	};
+	'vrchat/instance': {
+		req: {
+			token: string;
+			id: string;
+		};
+		res: Instance;
+	};
+	'vrchat/user': {
+		req: {
+			token: string;
+			user: string;
+		};
+		res: User;
+	};
+}
+
 // Implements Misskey.api.ApiClient.request
-export function api<E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, data: P = {} as any, token?: string | null | undefined, signal?: AbortSignal): Promise<Endpoints[E]['res']> {
+export function api<E extends keyof EndPoints, P extends EndPoints[E]['req']>(endpoint: E, data: P = {} as any, token?: string | null | undefined, signal?: AbortSignal): Promise<EndPoints[E]['res']> {
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
 		pendingApiRequestsCount.value--;
 	};
 
-	const promise = new Promise<Endpoints[E]['res'] | void>((resolve, reject) => {
+	const promise = new Promise<EndPoints[E]['res'] | void>((resolve, reject) => {
 		// Append a credential
 		if ($i) (data as any).i = $i.token;
 		if (token !== undefined) (data as any).i = token;
@@ -46,7 +84,7 @@ export function api<E extends keyof Endpoints, P extends Endpoints[E]['req']>(en
 }
 
 // Implements Misskey.api.ApiClient.request
-export function apiGet <E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, data: P = {} as any): Promise<Endpoints[E]['res']> {
+export function apiGet <E extends keyof EndPoints, P extends EndPoints[E]['req']>(endpoint: E, data: P = {} as any): Promise<EndPoints[E]['res']> {
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
@@ -55,7 +93,7 @@ export function apiGet <E extends keyof Endpoints, P extends Endpoints[E]['req']
 
 	const query = new URLSearchParams(data as any);
 
-	const promise = new Promise<Endpoints[E]['res'] | void>((resolve, reject) => {
+	const promise = new Promise<EndPoints[E]['res'] | void>((resolve, reject) => {
 		// Send request
 		window.fetch(`${apiUrl}/${endpoint}?${query}`, {
 			method: 'GET',

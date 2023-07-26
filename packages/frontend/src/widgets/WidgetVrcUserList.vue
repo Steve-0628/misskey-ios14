@@ -6,7 +6,7 @@
 
 	<div :class="$style.root">
 		<div v-if="!defaultStore.state.VRChatToken" class="init">
-			<span>トークンを設定してください。</span>
+			<MkA :to="'/settings/general'">トークンを設定してください。</MkA>
 		</div>
 		<MkLoading v-else-if="fetching"/>
 		<div v-else-if="friends.length !== 0" class="users">
@@ -15,7 +15,7 @@
 			</span>
 		</div>
 		<div v-else class="init">
-			<span>ワールドでオンラインのフレンドがいません。</span>
+			<span>オンラインのフレンドがいません。</span>
 		</div>
 	</div>
 </MkContainer>
@@ -26,9 +26,10 @@ import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/MkContainer.vue';
 import { useInterval } from '@/scripts/use-interval';
-import { getFriends, Friend } from '@/scripts/vrchat-api';
+import { fetchFriends, Friend } from '@/scripts/vrchat-api';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+import { alert } from '@/os';
 import VRCAvatar from '@/components/VrcAvatar.vue';
 
 const name = 'vrcUserList';
@@ -59,8 +60,15 @@ async function fetch(): Promise<void> {
 		fetching = false;
 		return;
 	}
-	const res = await getFriends();
-	friends = res.response.filter(f => f.location !== 'offline');
+	try {
+		friends = await fetchFriends();
+	} catch (err) {
+		const error = err as { code?: string };
+		if ('code' in error && error.code === 'INVALID_TOKEN') alert({
+			type: 'error',
+			text: 'VRChat APIのトークンが無効です。',
+		});
+	}
 	fetching = false;
 }
 
