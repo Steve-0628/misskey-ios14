@@ -54,7 +54,7 @@ export const deckStore = markRaw(new Storage('deck', {
 	},
 	useSimpleUiForNonRootPages: {
 		where: 'deviceAccount',
-		default: true,
+		default: false,
 	},
 }));
 
