@@ -321,7 +321,6 @@ function renote(viaKeyboard = false) {
 				localOnly,
 				visibility: smallerVisibility(appearNote.visibility, configuredVisibility),
 				renoteId: appearNote.id,
-				visibility: visibility as never,
 			}).then(() => {
 				os.toast(i18n.ts.renoted);
 			});
