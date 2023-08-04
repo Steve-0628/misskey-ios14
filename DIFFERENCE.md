@@ -12,5 +12,6 @@
 - DLSite
 - KaTeXを差し戻し
 - NSFW画像のhideボタンが死ぬほど押しにくくなったのをrevert
+  - 差し戻された
 - VRChat
 	- の改善版
