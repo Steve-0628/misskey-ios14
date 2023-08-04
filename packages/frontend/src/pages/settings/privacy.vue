@@ -53,8 +53,6 @@
 					<MkSwitch v-model="defaultNoteLocalOnly">{{ i18n.ts._visibility.disableFederation }}</MkSwitch>
 				</div>
 			</MkFolder>
-			
-			<MkSwitch v-model="useDefaultNoteVisibilityOnRenote" @update:model-value="save()">Renoteにデフォルトの公開範囲を適用する <span class="_beta">Shrimpia</span></MkSwitch>
 		</div>
 	</FormSection>
 
@@ -87,8 +85,6 @@ let defaultNoteVisibility = $computed(defaultStore.makeGetterSetter('defaultNote
 let defaultNoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
 let rememberNoteVisibility = $computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
 let keepCw = $computed(defaultStore.makeGetterSetter('keepCw'));
-
-let useDefaultNoteVisibilityOnRenote = $computed(defaultStore.makeGetterSetter('useDefaultNoteVisibilityOnRenote'));
 
 function save() {
 	os.api('i/update', {

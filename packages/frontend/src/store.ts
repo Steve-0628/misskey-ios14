@@ -342,10 +342,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: {} as Record<string, Record<string, string[]>>,
 	},
-	useDefaultNoteVisibilityOnRenote: {
-		where: 'account',
-		default: false,
-	},	
 	VRChatToken: {
 		where: 'device',
 		default: '',
