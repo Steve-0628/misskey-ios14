@@ -1,26 +1,29 @@
 <template>
-<MkA v-if="friend.id" class="_noSelect" :class="[$style.root, { [$style.square]: defaultStore.state.squareAvatars }]" :to="`/vrchat/${props.friend.id}`">
-	<img :class="$style.inner" :src="props.friend.currentAvatarThumbnailImageUrl" decoding="async"/>
+<MkA v-if="friend.id" class="_noSelect" :class="[$style.root, { [$style.square]: defaultStore.state.squareAvatars }]" :to="`/vrchat/${friend.id}`">
+	<img :class="$style.inner" :src="friend.currentAvatarThumbnailImageUrl" decoding="async"/>
 	<div
-		v-tooltip="props.friend.status" :class="[$style.indicator, {
-			[$style.join]: props.friend.status === 'join me',
-			[$style.active]: props.friend.status === 'active',
-			[$style.ask]: props.friend.status === 'ask me',
-			[$style.busy]: props.friend.status === 'busy',
-			[$style.private]: props.friend.location === 'private',
+		v-if="friend.status"
+		v-tooltip="friend.status"
+		:class="[$style.indicator, {
+			[$style.join]: friend.status === 'join me',
+			[$style.active]: friend.status === 'active',
+			[$style.ask]: friend.status === 'ask me',
+			[$style.busy]: friend.status === 'busy',
+			[$style.private]: friend.location === 'private',
 		}]"
 	/>
 </MkA>
 <span v-else class="_noSelect" :class="[$style.root, { [$style.square]: defaultStore.state.squareAvatars }]">
-	<img :class="$style.inner" :src="props.friend.currentAvatarThumbnailImageUrl" decoding="async"/>
+	<img :class="$style.inner" :src="friend.currentAvatarThumbnailImageUrl" decoding="async"/>
 	<div
-		v-tooltip="props.friend.status" :class="[$style.indicator, {
-			[$style.join]: props.friend.status === 'join me',
-			[$style.active]: props.friend.status === 'active',
-			[$style.ask]: props.friend.status === 'ask me',
-			[$style.busy]: props.friend.status === 'busy',
-			[$style.private]: props.friend.location === 'private',
-			[$style.web]: props.friend.location === 'offline',
+		v-tooltip="friend.status"
+		:class="[$style.indicator, {
+			[$style.join]: friend.status === 'join me',
+			[$style.active]: friend.status === 'active',
+			[$style.ask]: friend.status === 'ask me',
+			[$style.busy]: friend.status === 'busy',
+			[$style.private]: friend.location === 'private',
+			[$style.offline]: friend.location === 'offline',
 		}]"
 	/>
 </span>
@@ -29,10 +32,10 @@
 <script lang="ts" setup>
 import { defaultStore } from '@/store';
 import { Friend } from '@/scripts/vrchat-api';
-import { CustomPartial } from '@/scripts/types';
+import { CustomPartial } from '@/types/custom-utilities';
 
-const props = defineProps<{
-	friend: CustomPartial<Friend, 'id'>;
+defineProps<{
+	friend: CustomPartial<Friend, 'id' | 'location' | 'status'>;
 }>();
 
 </script>
@@ -79,30 +82,30 @@ const props = defineProps<{
 	height: 20%;
 	box-shadow: 0 0 0 3px var(--panel);
 	border-radius: 100%;
-	&.join {
-		background: #58d4c9;
-	}
+}
 
-	&.active {
-		background: rgb(26, 182, 26);
-	}
+.join {
+	background: #58d4c9;
+}
 
-	&.ask {
-		background: #e4bc48;
-	}
+.active {
+	background: rgb(26, 182, 26);
+}
 
-	&.busy {
-		background: rgb(113, 5, 5);
-	}
+.ask {
+	background: #e4bc48;
+}
 
-	&.private {
-		background: brown !important;
-	}
+.busy {
+	background: rgb(113, 5, 5);
+}
 
-	&.web {
-		background: black !important;
-	}
+.private {
+	background: brown !important;
+}
 
+.offline {
+	background: black !important;
 }
 
 </style>
