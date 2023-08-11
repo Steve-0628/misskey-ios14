@@ -203,7 +203,7 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { miLocalStorage } from '@/local-storage';
-import { Error } from '@/scripts/vrchat-api';
+import { VrcError } from '@/scripts/vrchat-api';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -231,7 +231,7 @@ type Success = {
 async function auth(): Promise<void> {
 	if (!username.value || !password.value) return;
 
-	const res: Success | Error = await fetch(defaultStore.state.VRChatURL + 'auth', {
+	const res: Success | VrcError = await fetch(defaultStore.state.VRChatURL + 'auth', {
 		method: 'POST',
 		body: `${username.value}:${password.value}`,
 	}).then(response => response.json());
@@ -256,7 +256,7 @@ async function do2fa(): Promise<void> {
 	if (!twofactor.value) return;
 	const authUUID = defaultStore.state.VRChatAuth && ';' + defaultStore.state.VRChatAuth;
 
-	const res: Success | Error = await fetch(defaultStore.state.VRChatURL + 'twofactor_email', {
+	const res: Success | VrcError = await fetch(defaultStore.state.VRChatURL + 'twofactor_email', {
 		method: 'POST',
 		body: `auth=${token.value}:${twofactor.value}${authUUID}`,
 	}).then(response => response.json());
