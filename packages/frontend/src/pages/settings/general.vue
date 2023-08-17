@@ -159,40 +159,17 @@
 			<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
 		</div>
 	</FormSection>
-
-	<FormSection>
-		<div class="_margin">VRChat APIのトークンを設定</div>
-		<MkInput v-model="VRChatURL" type="text" placeholder="プロキシサーバーのURL https://hoge.com/"/>
-		<span v-if="!token" class="_gaps_s">
-			<MkInput v-model="username" type="text" placeholder="ユーザーネームもしくはメールアドレス"/>
-			<MkInput v-model="password" type="password" placeholder="パスワード"/>
-			<MkButton @click="auth">決定</MkButton>
-		</span>
-		<span v-else class="_gaps_s">
-			<MkInput v-model="token" type="text" placeholder="トークン"/>
-			<MkInput v-model="twofactor" type="text" placeholder="2FAコード"/>
-			<MkButton @click="do2fa">決定</MkButton>
-		</span>
-		認証UUID
-		<MkInput v-model="VRChatAuth" type="text"/>
-		<div>
-			ask meのユーザーを表示
-			<button :class="$style.button" @click="toggleAskMe('t')">オン</button>
-			<button :class="$style.button" @click="toggleAskMe('f')">オフ</button>
-		</div>
-	</FormSection>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch, shallowRef } from 'vue';
+import { computed, ref, watch } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
@@ -203,7 +180,6 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { miLocalStorage } from '@/local-storage';
-import { VrcError } from '@/scripts/vrchat-api';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -218,79 +194,6 @@ async function reloadAsk() {
 
 	unisonReload();
 }
-
-const username = shallowRef('');
-const password = shallowRef('');
-const token = shallowRef('');
-const twofactor = shallowRef('');
-
-type Success = {
-	Success: string;
-}
-
-async function auth(): Promise<void> {
-	if (!username.value || !password.value) return;
-
-	const res: Success | VrcError = await fetch(defaultStore.state.VRChatURL + 'auth', {
-		method: 'POST',
-		body: `${username.value}:${password.value}`,
-	}).then(response => response.json());
-
-	if ('Error' in res) {
-		os.alert({
-			type: 'error',
-			text: res.Error,
-		});
-		return;
-	}
-
-	token.value = res.Success;
-
-	os.alert({
-		type: 'info',
-		text: '二段階認証が必要です。',
-	});
-}
-
-async function do2fa(): Promise<void> {
-	if (!twofactor.value) return;
-	const authUUID = defaultStore.state.VRChatAuth && ';' + defaultStore.state.VRChatAuth;
-
-	const res: Success | VrcError = await fetch(defaultStore.state.VRChatURL + 'twofactor_email', {
-		method: 'POST',
-		body: `auth=${token.value}:${twofactor.value}${authUUID}`,
-	}).then(response => response.json());
-
-	if ('Error' in res) {
-		os.alert({
-			type: 'error',
-			text: res.Error,
-		});
-		return;
-	}
-
-	defaultStore.set('VRChatAuth', res.Success);
-
-	os.alert({
-		type: 'success',
-		text: '二段階認証が完了しました。',
-	});
-}
-
-async function toggleAskMe(bool: string): Promise<void> {
-	const res: string = await fetch(defaultStore.state.VRChatURL + 'askme', {
-		method: 'POST',
-		body: defaultStore.state.VRChatAuth + ':' + bool,
-	}).then(response => response.text());
-
-	os.alert({
-		type: res.endsWith('。') ? 'success' : 'error',
-		text: res,
-	});
-}
-
-const VRChatAuth = computed<string>(defaultStore.makeGetterSetter('VRChatAuth'));
-const VRChatURL = computed<string>(defaultStore.makeGetterSetter('VRChatURL'));
 
 const overridedDeviceKind = computed(defaultStore.makeGetterSetter('overridedDeviceKind'));
 const serverDisconnectedBehavior = computed(defaultStore.makeGetterSetter('serverDisconnectedBehavior'));
@@ -397,22 +300,3 @@ definePageMetadata({
 	icon: 'ti ti-adjustments',
 });
 </script>
-
-<style lang="scss" module>
-.button {
-	padding: 7px 14px;
-	font-size: 95%;
-	text-decoration: none;
-	background: var(--buttonBg);
-	border-radius: 5px;
-	margin: .5em;
-	border: none;
-	&:hover {
-		background: var(--buttonHoverBg);
-	}
-
-	&:active {
-		background: var(--buttonHoverBg);
-	}
-}
-</style>
