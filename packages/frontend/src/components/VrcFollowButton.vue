@@ -17,7 +17,8 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import MkButton from './MkButton.vue';
-import { Status, friendRequest, friendStatus } from '@/scripts/vrchat-api';
+import { Status, fetchDataWithAuth } from '@/scripts/vrchat-api';
+import { confirm } from '@/os';
 
 const emit = defineEmits<{
 	(ev: 'success', value: boolean): void
@@ -31,11 +32,18 @@ const res = ref<Status>();
 const fetching = ref(true);
 
 onMounted(async () => {
-	res.value = await friendStatus(props.id);
+	res.value = await fetchDataWithAuth('friend_status', props.id);
 	fetching.value = false;
 });
 
-async function request(isPost: boolean): Promise<void> {
-	if (await friendRequest(props.id, isPost)) emit('success', isPost);
+function request(isPost: boolean): void {
+	confirm({
+		type: 'warning',
+		text: `フレンド申請を${isPost ? '送信' : '解除'}しますか？`,
+	}).then( async ({ canceled }) => {
+		if (canceled) return;
+
+		if (await fetchDataWithAuth('friend_request', props.id, isPost ? 'POST' : 'DELETE')) emit('success', isPost);
+	});
 }
 </script>

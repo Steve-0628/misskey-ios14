@@ -1,19 +1,59 @@
 import { defaultStore } from '@/store';
 import { alert as miAlert } from '@/os';
 
-export type VrcError = {
-	Error: string;
+type ApiResponse<T> = { Success: T } | { Error: string };
+
+type Method =
+	| 'GET'
+	| 'HEAD'
+	| 'POST'
+	| 'PUT'
+	| 'DELETE'
+	| 'CONNECT'
+	| 'OPTIONS'
+	| 'TRACE'
+	| 'PATCH';
+
+type VrcEndPoints = {
+	'instance': {
+		req: string;
+		res: Instance;
+	};
+	'user': {
+		req: string;
+		res: User;
+	};
+	'search_user': {
+		req: string;
+		res: HitUsers;
+	};
+	'friend_request': {
+		req: string;
+		res: true;
+	};
+	'friend_status': {
+		req: string;
+		res: Status;
+	};
+	'world': {
+		req: string;
+		res: World;
+	};
+	'group': {
+		req: string;
+		res: Group;
+	};
+	'favorites': {
+		req: string;
+		res: true;
+	};
 }
 
-export async function fetchFriends(): Promise<Friend[] | undefined> {
-	type Success = {
-		Success: Friend[];
-	};
-
-	const res: Success | VrcError = await fetch(defaultStore.state.VRChatURL + 'friends', {
-		method: 'POST',
-		body: defaultStore.state.VRChatAuth,
-	}).then(response => response.json());
+export async function fetchData<T>(url: string, body: string, method: Method = 'POST'): Promise<T | undefined> {
+	const res: ApiResponse<T> = await fetch(defaultStore.state.VRChatURL + url, {
+		method,
+		body,
+	}).then(r => r.json());
 
 	if ('Error' in res) {
 		miAlert({
@@ -26,109 +66,8 @@ export async function fetchFriends(): Promise<Friend[] | undefined> {
 	return res.Success;
 }
 
-export async function fetchInstance(id: string): Promise<Instance | undefined> {
-	type Success = {
-		Success: Instance;
-	};
-
-	const res: Success | VrcError = await fetch(defaultStore.state.VRChatURL + 'instance', {
-		method: 'POST',
-		body: defaultStore.state.VRChatAuth + ':' + id,
-	}).then(response => response.json());
-
-	if ('Error' in res) {
-		miAlert({
-			type: 'error',
-			text: res.Error,
-		});
-		return;
-	}
-
-	return res.Success;
-}
-
-export async function fetchUser(user: string): Promise<User | undefined> {
-	type Success = {
-		Success: User;
-	};
-
-	const res: Success | VrcError = await fetch(defaultStore.state.VRChatURL + 'user', {
-		method: 'POST',
-		body: defaultStore.state.VRChatAuth + ':' + user,
-	}).then(response => response.json());
-
-	if ('Error' in res) {
-		miAlert({
-			type: 'error',
-			text: res.Error,
-		});
-		return;
-	}
-
-	return res.Success;
-}
-
-export async function searchUser(query: string): Promise<HitUsers | undefined> {
-	type Success = {
-		Success: HitUsers;
-	};
-
-	const res: Success | VrcError = await fetch(defaultStore.state.VRChatURL + 'search_user', {
-		method: 'POST',
-		body: defaultStore.state.VRChatAuth + ':' + query,
-	}).then(response => response.json());
-
-	if ('Error' in res) {
-		miAlert({
-			type: 'error',
-			text: res.Error,
-		});
-		return;
-	}
-
-	return res.Success;
-}
-
-export async function friendRequest(id: string, isPost: boolean): Promise<boolean> {
-	type Success = {
-		Success: unknown; // 空
-	};
-
-	const res: Success | VrcError = await fetch(defaultStore.state.VRChatURL + 'friend_request', {
-		method: isPost ? 'POST' : 'DELETE',
-		body: defaultStore.state.VRChatAuth + ':' + id,
-	}).then(response => response.json());
-
-	if ('Error' in res) {
-		miAlert({
-			type: 'error',
-			text: res.Error,
-		});
-		return false;
-	}
-
-	return true;
-}
-
-export async function friendStatus(id: string): Promise<Status | undefined> {
-	type Success = {
-		Success: Status;
-	};
-
-	const res: Success | VrcError = await fetch(defaultStore.state.VRChatURL + 'friend_status', {
-		method: 'POST',
-		body: defaultStore.state.VRChatAuth + ':' + id,
-	}).then(response => response.json());
-
-	if ('Error' in res) {
-		miAlert({
-			type: 'error',
-			text: res.Error,
-		});
-		return;
-	}
-
-	return res.Success;
+export async function fetchDataWithAuth<E extends keyof VrcEndPoints, T extends VrcEndPoints[E]['res']>(url: E, body: VrcEndPoints[E]['req'], method?: Method): Promise<T | undefined> {
+	return fetchData<T>(url, defaultStore.state.VRChatAuth + ':' + body, method);
 }
 
 export type Friend = {
@@ -167,3 +106,87 @@ export type Status = {
 	outgoingRequest: boolean;
 	incomingRequest: boolean;
 };
+
+export type World = {
+	authorId: string;
+	// authorName: string;
+	capacity: number;
+	created_at: string;
+	description: string;
+	favorites: number;
+	featured: boolean;
+	heat: number;
+	// id: string;
+	imageUrl: string;
+	labsPublicationDate: string;
+	name: string;
+	namespace: string;
+	// occupants: number;
+	organization: string;
+	popularity: number;
+	privateOccupants: number;
+	publicOccupants: number;
+	publicationDate: string;
+	// releaseStatus: string;
+	tags: string[];
+	thumbnailImageUrl: string;
+	updated_at: string;
+	// version: number;
+	visits: number;
+}
+
+type Gallery = {
+    id: string;
+    name: string;
+    description: string;
+    membersOnly: boolean;
+    roleIdsToView: string[];
+    roleIdsToSubmit: string[];
+    roleIdsToAutoApprove: string[];
+    roleIdsToManage: string[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+type Member = {
+    id: string;
+    groupId: string;
+    userId: string;
+    roleIds: string[];
+    managerNotes: string | null;
+    membershipStatus: string;
+    isSubscribedToAnnouncements: boolean;
+    visibility: string;
+    isRepresenting: boolean;
+    joinedAt: string;
+    bannedAt: string | null;
+    has2FA: boolean;
+    permissions: string[];
+}
+
+export type Group = {
+    id: string;
+    name: string;
+    shortCode: string;
+    discriminator: string;
+    description: string;
+    iconUrl: string;
+    bannerUrl: string;
+    privacy: string;
+    ownerId: string;
+    rules: string;
+    links: string[];
+    languages: string[];
+    iconId: string;
+    bannerId: string;
+    memberCount: number;
+    memberCountSyncedAt: string;
+    isVerified: boolean;
+    joinState: string;
+    tags: string[];
+    galleries: Gallery[];
+    createdAt: string;
+    onlineMemberCount: number;
+    membershipStatus: string;
+    myMember: Member;
+}

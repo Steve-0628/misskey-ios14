@@ -1,34 +1,18 @@
 <template>
 <MkLoading v-if="fetching"/>
 <div v-else-if="user" class="_gaps_m" :class="$style.container">
-	<span style="display:flex">
-		<VrcAvatar :friend="user" :class="$style.avatar"/>
-		<span v-if="user.statusDescription" :class="$style.title" style="font-size:1.5em">
-			{{ user.displayName }}<span class="description">{{ user.statusDescription }}</span>
-		</span>
-		<span v-else :class="$style.title">{{ user.displayName }}</span>
-	</span>
-	<span v-if="user.last_activity">
-		フレンド({{ user.rank }}) 最終ログイン: <MkTime :time="user.last_activity"/>
-	</span>
-	<span v-else>
-		{{ user.rank }}<VrcFollowButton :id="props.id" :class="$style.follow" @success="is => toast(`フレンド申請を${is ? '送信' : '解除'}しました。`)"/>
-	</span>
-	<div v-if="user.bio || user.bioLinks.length" :class="$style.content" class="_gaps_m">
-		<div>{{ user.bio }}</div>
-		<div v-for="bioLink in user.bioLinks" :key="bioLink">
-			<a :href="bioLink" target="_blank">・ {{ bioLink }}</a>
-		</div>
-	</div>
-	<div v-else>プロフィールはありません。</div>
+	<VrchatUser :id="id" :user="user"/>
 	<div v-if="instance" class="_gaps_m">
-		<span style="font-size: 1.5em">{{ instance.name }} ({{ instance.userCount }})</span>
+		<MkA :to="`/world/${user.location.split(':')[0]}`" style="font-size: 1.5em">{{ instance.name }} ({{ instance.userCount }})</MkA>
 		<MkA v-if="instance.ownerId" :to="`/vrchat/${instance.ownerId}`">
 			<div v-if="owner">
 				<VrcAvatar :friend="owner" :class="$style.avatar_host"/>{{ owner.displayName }}
 			</div>
-			<div v-else>
+			<div v-else-if="instance.ownerId.startsWith('usr')">
 				<VrcAvatar :friend="user" :class="$style.avatar_host"/>{{ user.displayName }}
+			</div>
+			<div v-else>
+				<VrcGroup :id="instance.ownerId"/>
 			</div>
 		</MkA>
 		<div :class="[$style.content, $style.instance]">
@@ -47,11 +31,11 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
+import VrchatUser from '@/components/VrcUser.user.vue';
 import VrcAvatar from '@/components/VrcAvatar.vue';
-import VrcFollowButton from '@/components/VrcFollowButton.vue';
+import VrcGroup from '@/components/VrcGroup.vue';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { Instance, User, fetchInstance, fetchUser } from '@/scripts/vrchat-api';
-import { toast } from '@/os';
+import { Instance, User, fetchDataWithAuth } from '@/scripts/vrchat-api';
 
 const props = defineProps<{
 	id: string;
@@ -64,21 +48,21 @@ const owner = ref<User>();
 const fetching = ref(true);
 
 onMounted(async () => {
-	user.value = await fetchUser(props.id);
+	user.value = await fetchDataWithAuth('user', props.id);
 
 	if (!(user.value?.location.startsWith('wrld'))) {
 		fetching.value = false;
 		return;
 	}
 
-	instance.value = await fetchInstance(user.value.location);
+	instance.value = await fetchDataWithAuth('instance', user.value.location);
 
-	if (!instance.value || instance.value.ownerId === props.id || !instance.value.ownerId) {
+	if (!instance.value || instance.value.ownerId === props.id || !(instance.value.ownerId?.startsWith('usr'))) {
 		fetching.value = false;
 		return;
 	}
 
-	owner.value = await fetchUser(instance.value.ownerId);
+	owner.value = await fetchDataWithAuth('user', instance.value.ownerId);
 	fetching.value = false;
 });
 
@@ -99,12 +83,6 @@ definePageMetadata({
 	}
 }
 
-.follow {
-	position: absolute;
-	top: 1em;
-	right: 1em;
-}
-
 .container {
 	background: var(--navBg);
 	border-radius: 2em;
@@ -112,23 +90,6 @@ definePageMetadata({
 	a {
 		color: var(--link);
 	}
-}
-
-.title {
-	margin-left: .5em;
-	font-size: 2em;
-	position: relative;
-	:global(.description) {
-		font-size: .5em;
-		position: absolute;
-		top: 70%;
-		left: 0; 
-	}
-}
-
-.avatar {
-	width: 40px;
-	height: 40px;
 }
 
 .avatar_host {

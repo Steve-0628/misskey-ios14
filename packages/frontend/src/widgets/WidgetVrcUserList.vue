@@ -6,10 +6,10 @@
 
 	<div :class="$style.root">
 		<div v-if="!defaultStore.state.VRChatAuth" class="init">
-			<MkA to="/settings/general">トークンを設定してください。</MkA>
+			<MkA to="/settings/vrchat">トークンを設定してください。</MkA>
 		</div>
 		<MkLoading v-else-if="fetching"/>
-		<div v-else-if="friends.length !== 0" class="users">
+		<div v-else-if="friends.length" class="users">
 			<span v-for="friend in friends" :key="friend.id" class="user">
 				<VRCAvatar class="avatar" :friend="friend"/>
 			</span>
@@ -26,7 +26,7 @@ import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/MkContainer.vue';
 import { useInterval } from '@/scripts/use-interval';
-import { fetchFriends, Friend } from '@/scripts/vrchat-api';
+import { fetchData, Friend } from '@/scripts/vrchat-api';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import VRCAvatar from '@/components/VrcAvatar.vue';
@@ -51,7 +51,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-let friends = $ref(<Friend[]>[]);
+let friends = $ref<Friend[]>([]);
 let fetching = $ref(true);
 
 async function fetch(): Promise<void> {
@@ -60,7 +60,7 @@ async function fetch(): Promise<void> {
 		return;
 	}
 
-	const res = await fetchFriends();
+	const res = await fetchData<Friend[]>('friends', defaultStore.state.VRChatAuth);
 
 	if (!res) {
 		fetching = false;
