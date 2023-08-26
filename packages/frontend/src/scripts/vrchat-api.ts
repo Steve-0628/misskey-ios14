@@ -15,6 +15,10 @@ type Method =
 	| 'PATCH';
 
 type VrcEndPoints = {
+	'friends': {
+		req: boolean;
+		res: Friend[];
+	};
 	'instance': {
 		req: string;
 		res: Instance;
@@ -70,15 +74,12 @@ export async function fetchDataWithAuth<E extends keyof VrcEndPoints, T extends 
 	return fetchData<T>(url, defaultStore.state.VRChatAuth + ':' + body, method);
 }
 
-export type Friend = {
-	currentAvatarThumbnailImageUrl: string;
+export type Friend = Pick<User, 'currentAvatarThumbnailImageUrl' | 'location' | 'status'> & {
 	id: string;
-	location: string;
-	status: 'join me' | 'active' | 'ask me' | 'busy';
 };
 
 export type Instance = {
-	ownerId?: string;
+	ownerId: string | null;
 	userCount: number;
 	name: string;
 	description: string;
@@ -90,15 +91,14 @@ export type User = {
 	bioLinks: string[];
 	currentAvatarThumbnailImageUrl: string;
 	displayName: string;
-	last_activity?: string;
+	isFriend: boolean;
 	location: string;
 	status: 'join me' | 'active' | 'ask me' | 'busy';
-	statusDescription?: string;
+	statusDescription: string | null;
 	rank: string;
 };
 
-export type HitUsers = Array<Pick<User, 'currentAvatarThumbnailImageUrl' | 'displayName' | 'statusDescription'> & {
-	isFriend: boolean;
+export type HitUsers = Array<Pick<User, 'currentAvatarThumbnailImageUrl' | 'displayName' | 'statusDescription' | 'isFriend'> & {
 	id: string;
 }>;
 
@@ -188,5 +188,5 @@ export type Group = {
     createdAt: string;
     onlineMemberCount: number;
     membershipStatus: string;
-    myMember: Member;
+    myMember: Member | null;
 }
