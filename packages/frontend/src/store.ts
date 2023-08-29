@@ -350,10 +350,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: '',
 	},
-	VRChatShowAskMe: {
-		where: 'device',
-		default: true,
-	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期
