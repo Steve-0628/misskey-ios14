@@ -62,7 +62,7 @@ export async function fetchData<T>(url: string, body: string, method: Method = '
 	if ('Error' in res) {
 		miAlert({
 			type: 'error',
-			text: res.Error,
+			text: res.Error.includes('Missing Credentials') ? 'トークンの有効期限が切れています。' : res.Error,
 		});
 		return;
 	}
@@ -70,7 +70,7 @@ export async function fetchData<T>(url: string, body: string, method: Method = '
 	return res.Success;
 }
 
-export async function fetchDataWithAuth<E extends keyof VrcEndPoints, T extends VrcEndPoints[E]['res']>(url: E, body: VrcEndPoints[E]['req'], method?: Method): Promise<T | undefined> {
+export function fetchDataWithAuth<E extends keyof VrcEndPoints, T extends VrcEndPoints[E]['res']>(url: E, body: VrcEndPoints[E]['req'], method?: Method): Promise<T | undefined> {
 	return fetchData<T>(url, defaultStore.state.VRChatAuth + (body && ':' + body), method);
 }
 
