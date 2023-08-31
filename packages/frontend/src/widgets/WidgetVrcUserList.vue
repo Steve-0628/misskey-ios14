@@ -26,7 +26,7 @@ import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/MkContainer.vue';
 import { useInterval } from '@/scripts/use-interval';
-import { fetchDataWithAuth, Friend } from '@/scripts/vrchat-api';
+import { fetchData, Friend } from '@/scripts/vrchat-api';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import VRCAvatar from '@/components/VrcAvatar.vue';
@@ -51,7 +51,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-let friends = $ref<Friend[]>([]);
+let friends = $shallowRef<Friend[]>([]);
 let fetching = $ref(true);
 
 async function fetch(): Promise<void> {
@@ -60,7 +60,7 @@ async function fetch(): Promise<void> {
 		return;
 	}
 
-	const res = await fetchDataWithAuth('friends', defaultStore.state.VRChatShowAskMe);
+	const res = await fetchData('friends', defaultStore.state.VRChatAuth);
 
 	if (!res) {
 		fetching = false;

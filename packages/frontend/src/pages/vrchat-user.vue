@@ -14,7 +14,14 @@
 		</MkA>
 		<VrcGroup v-else-if="instance.ownerId" :id="instance.ownerId"/>
 		<div :class="[$style.content, $style.instance]">
-			<div>{{ instance.description }}</div>
+			<div class="_gaps_s">
+				<span :class="$style.users">
+					<span v-for="[img, name] in Object.entries(instance.users)" :key="name" :class="$style.user">
+						<VrcAvatar :friend="{ currentAvatarThumbnailImageUrl: img }" :class="$style.avatar_host"/>{{ name }}
+					</span>
+				</span>
+				<div>{{ instance.description }}</div>
+			</div>
 			<img :class="$style.img" :src="instance.thumbnailImageUrl" decoding="async"/>
 		</div>
 	</div>
@@ -22,13 +29,10 @@
 		{{ user.location }}
 	</div>
 </div>
-<div v-else>
-	情報の取得に失敗しました。トークンが無効である可能性があります。
-</div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, shallowRef } from 'vue';
 import VrchatUser from '@/components/VrcUser.user.vue';
 import VrcAvatar from '@/components/VrcAvatar.vue';
 import VrcGroup from '@/components/VrcGroup.vue';
@@ -39,9 +43,9 @@ const props = defineProps<{
 	id: string;
 }>();
 
-const user = ref<User>();
-const instance = ref<Instance>();
-const owner = ref<User>();
+const user = shallowRef<User>();
+const instance = shallowRef<Instance>();
+const owner = shallowRef<User>();
 
 const fetching = ref(true);
 
@@ -106,5 +110,15 @@ definePageMetadata({
 	border-radius: 10%;
 	width: 100%;
 	margin: 1em auto;
+}
+
+.users {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	.user {
+		background: var(--navBg);
+		border-radius: 2em;
+		padding: .5em;
+	}
 }
 </style>

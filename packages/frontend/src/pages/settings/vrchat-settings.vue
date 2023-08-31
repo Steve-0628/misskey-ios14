@@ -17,10 +17,6 @@
 			</span>
 			<div class="_margin">認証UUID</div>
 			<MkInput v-model="VRChatAuth" type="text"/>
-			<MkSwitch v-model="VRChatShowAskMe">
-				ask me
-				<template #caption>フレンド一覧ウィジェットにask meのユーザーを表示するかどうかを設定します。</template>
-			</MkSwitch>
 		</div>
 	</FormSection>
 </div>
@@ -30,7 +26,6 @@
 import { computed, ref } from 'vue';
 import { defaultStore } from '@/store';
 import MkInfo from '@/components/MkInfo.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -45,7 +40,7 @@ const twofactor = ref('');
 async function auth(): Promise<void> {
 	if (!username.value || !password.value) return;
 
-	const res = await fetchData<string>('auth', `${username.value}:${password.value}`);
+	const res = await fetchData('auth', `${username.value}:${password.value}`);
 	if (!res) return;
 	token.value = res;
 
@@ -58,7 +53,7 @@ async function auth(): Promise<void> {
 async function do2fa(): Promise<void> {
 	if (!twofactor.value) return;
 
-	const res = await fetchData<string>('twofactor', `${token.value}:${twofactor.value}${defaultStore.state.VRChatAuth && ';' + defaultStore.state.VRChatAuth}`);
+	const res = await fetchData('twofactor', `${token.value}:${twofactor.value}${defaultStore.state.VRChatAuth && ';' + defaultStore.state.VRChatAuth}`);
 	if (!res) return;
 	defaultStore.set('VRChatAuth', res);
 
@@ -70,6 +65,5 @@ async function do2fa(): Promise<void> {
 
 const VRChatAuth = computed<string>(defaultStore.makeGetterSetter('VRChatAuth'));
 const VRChatURL = computed<string>(defaultStore.makeGetterSetter('VRChatURL'));
-const VRChatShowAskMe = computed<boolean>(defaultStore.makeGetterSetter('VRChatShowAskMe'));
 
 </script>
