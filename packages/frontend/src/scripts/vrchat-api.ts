@@ -17,7 +17,10 @@ type Method =
 type VrcEndPoints = VrcEndPointsMultiArgs & {
 	'auth': string;
 	'twofactor': string;
-	'friends': Friend[];
+	'friends': {
+		'public': Friend[];
+		'private': Friend[];
+	};
 }
 
 type VrcEndPointsMultiArgs = {
@@ -54,7 +57,7 @@ export function fetchDataWithAuth<E extends keyof VrcEndPointsMultiArgs>(url: E,
 
 export type Friend = Pick<User, 'currentAvatarThumbnailImageUrl' | 'location' | 'status'> & {
 	id: string;
-	undetermined: true | null;
+	undetermined: boolean;
 };
 
 export type Instance = {
@@ -67,7 +70,7 @@ export type Instance = {
 };
 
 export type User = {
-	bio: string;
+	bio: string | null;
 	bioLinks: string[];
 	currentAvatarThumbnailImageUrl: string;
 	displayName: string;
@@ -120,7 +123,7 @@ type Gallery = {
 	name: string;
 	description: string;
 	membersOnly: boolean;
-	roleIdsToView: string[];
+	roleIdsToView: string[] | null;
 	roleIdsToSubmit: string[];
 	roleIdsToAutoApprove: string[];
 	roleIdsToManage: string[];
