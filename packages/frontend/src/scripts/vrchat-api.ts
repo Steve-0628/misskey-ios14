@@ -21,6 +21,8 @@ type VrcEndPoints = VrcEndPointsMultiArgs & {
 		'public': Friend[];
 		'private': Friend[];
 	};
+	'favfriends': Pick<VrcEndPoints, 'friends'>;
+	'favorites/refresh': null;
 }
 
 type VrcEndPointsMultiArgs = {
@@ -70,7 +72,7 @@ export type Instance = {
 };
 
 export type User = {
-	bio: string | null;
+	bio: string | null; //空文字列の場合もある
 	bioLinks: string[];
 	currentAvatarThumbnailImageUrl: string;
 	displayName: string;

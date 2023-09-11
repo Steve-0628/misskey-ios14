@@ -16,12 +16,17 @@
 				<MkButton @click="auth">決定</MkButton>
 			</span>
 			<span v-else class="_gaps_s">
-				<MkInput v-model="token" type="text" placeholder="トークン"/>
+				<MkInput v-for="text in token.split(':')" :key="text" :modelValue="text" readonly/>
 				<MkInput v-model="twofactor" type="text" placeholder="2FAコード"/>
 				<MkButton @click="do2fa">決定</MkButton>
 			</span>
 			<div class="_margin">認証ID</div>
-			<MkInput v-model="VRChatAuth" type="text"/>
+			<MkInput v-model="VRChatAuth" type="text">
+				<template #caption>AuthTokenのキーとなります。複数のクライアントで同じ文字列を入力することで同一のトークンを使用することが可能です。任意の文字列を入力してください。</template>
+			</MkInput>
+			<MkButton @click="fetchData('favorites/refresh', defaultStore.state.VRChatAuth)">
+				お気に入りフレンドリストの再取得を要求
+			</MkButton>
 		</div>
 	</FormSection>
 </div>
