@@ -1,7 +1,7 @@
 <template>
 <component :is="friend.id ? 'MkA' : 'span'" class="_noSelect" :class="[$style.root, { [$style.square]: defaultStore.state.squareAvatars }]" :to="`/vrchat/${friend.id}`">
 	<img :class="$style.inner" :src="friend.currentAvatarThumbnailImageUrl" decoding="async"/>
-	<div v-if="friend.status" v-tooltip="friend.status" :class="$style.indicator" :style="`background: ${style}`"/>
+	<div v-if="friend.status" v-tooltip="friend.status" :class="$style.indicator" :style="`background:${props.friend.undetermined?`linear-gradient(225deg,${style} 50%,gray 50%)`:style}`"/>
 </component>
 </template>
 
@@ -16,15 +16,12 @@ const props = defineProps<{
 }>();
 
 const style = computed(() => {
-	switch (props.friend.location) {
-		case 'offline': return 'black';
-		case 'private': if (props.friend.status !== 'ask me') return 'brown';
-	}
+	if (props.friend.location === 'offline') return 'black';
 
 	switch (props.friend.status) {
 		case 'join me': return '#58d4c9';
 		case 'active': return 'rgb(26, 182, 26)';
-		case 'ask me': return props.friend.undetermined ? 'gray' : '#e4bc48';
+		case 'ask me': return '#e4bc48';
 		case 'busy': return 'rgb(113, 5, 5)';
 		default: return 'black';
 	}
