@@ -9,6 +9,8 @@ import type Logger from '@/logger.js';
 import type { UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { LocalUser, RemoteUser } from '@/models/entities/User.js';
+import { RelationshipJobData } from '../types.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class RelationshipProcessorService {

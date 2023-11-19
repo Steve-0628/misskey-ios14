@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
-import { ZipReader } from 'slacc';
+import unzipper from 'unzipper';
 import { DataSource } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository, DriveFilesRepository, UsersRepository } from '@/models/index.js';
@@ -73,9 +73,9 @@ export class ImportCustomEmojisProcessorService {
 		}
 
 		const outputPath = path + '/emojis';
-		try {
-			this.logger.succ(`Unzipping to ${outputPath}`);
-			ZipReader.withDestinationPath(outputPath).viaBuffer(await fs.promises.readFile(destPath));
+		const unzipStream = fs.createReadStream(destPath);
+		const extractor = unzipper.Extract({ path: outputPath });
+		extractor.on('close', async () => {
 			const metaRaw = fs.readFileSync(outputPath + '/meta.json', 'utf-8');
 			const meta = JSON.parse(metaRaw);
 

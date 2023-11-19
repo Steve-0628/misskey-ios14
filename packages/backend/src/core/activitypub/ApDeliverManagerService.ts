@@ -140,7 +140,10 @@ class DeliverManager {
 		}
 
 		// deliver
-		this.queueService.deliverMany(this.actor, this.activity, inboxes);
+		for (const inbox of inboxes) {
+			// inbox[0]: inbox, inbox[1]: whether it is sharedInbox
+			this.queueService.deliver(this.actor, this.activity, inbox[0], inbox[1]);
+		}
 	}
 }
 

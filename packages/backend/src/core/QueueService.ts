@@ -43,7 +43,7 @@ export class QueueService {
 			isSharedInbox,
 		};
 
-		return this.deliverQueue.add(to, data, {
+		return this.deliverQueue.add(data, {
 			attempts: this.config.deliverJobMaxAttempts ?? 12,
 			timeout: 1 * 60 * 1000,	// 1min
 			backoff: {
@@ -51,20 +51,7 @@ export class QueueService {
 			},
 			removeOnComplete: true,
 			removeOnFail: true,
-		};
-
-		await this.deliverQueue.addBulk(Array.from(inboxes.entries(), d => ({
-			name: d[0],
-			data: {
-				user,
-				content,
-				to: d[0],
-				isSharedInbox: d[1],
-			} as DeliverJobData,
-			opts,
-		})));
-
-		return;
+		});
 	}
 
 	@bindThis
