@@ -104,14 +104,14 @@ export class PushNotificationService implements OnApplicationShutdown {
 				//swLogger.info(err.headers);
 				//swLogger.info(err.body);
 
-				if (err.statusCode === 410) {
-					this.swSubscriptionsRepository.delete({
-						userId: userId,
-						endpoint: subscription.endpoint,
-						auth: subscription.auth,
-						publickey: subscription.publickey,
-					});
-				}
+				// if (err.statusCode === 410) {
+				// 	this.swSubscriptionsRepository.delete({
+				// 		userId: userId,
+				// 		endpoint: subscription.endpoint,
+				// 		auth: subscription.auth,
+				// 		publickey: subscription.publickey,
+				// 	});
+				// }
 			});
 		}
 	}
