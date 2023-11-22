@@ -78,7 +78,7 @@ const toggleReaction = async (ev) => {
 			claimAchievement('reactWithoutRead');
 		}
 	}
-}
+};
 
 function anime() {
 	if (document.hidden) return;
