@@ -5,17 +5,17 @@
 
 version: 2
 updates:
-  - package-ecosystem: "pnpm"
+  - package-ecosystem: "npm"
     directory: "/packages/backend"
     schedule:
-      interval: "hourly"
+      interval: "daily"
 
-  - package-ecosystem: "pnpm"
+  - package-ecosystem: "npm"
     directory: "/packages/frontend"
     schedule:
-      interval: "hourly"
+      interval: "daily"
 
-  - package-ecosystem: "pnpm"
+  - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "hourly"
+      interval: "daily"
