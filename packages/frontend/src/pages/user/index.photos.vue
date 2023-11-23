@@ -58,16 +58,18 @@ onMounted(() => {
 	];
 	os.api('users/notes', {
 		userId: props.user.id,
-		fileType: image,
+		withFiles: true,
 		excludeNsfw: defaultStore.state.nsfw !== 'ignore',
-		limit: 10,
+		limit: 20,
 	}).then(notes => {
 		for (const note of notes) {
 			for (const file of note.files) {
-				images.push({
-					note,
-					file,
-				});
+				if (image.includes(file.type)) {
+					images.push({
+						note,
+						file,
+					});
+				}
 			}
 		}
 		fetching = false;
