@@ -22,7 +22,7 @@
 		"@rollup/pluginutils": "5.0.2",
 		"@syuilo/aiscript": "0.15.0",
 		"@tabler/icons-webfont": "2.25.0",
-		"@vitejs/plugin-vue": "4.2.3",
+		"@vitejs/plugin-vue": "4.5.0",
 		"@vue-macros/reactivity-transform": "0.3.15",
 		"@vue/compiler-sfc": "3.3.4",
 		"astring": "1.8.6",
