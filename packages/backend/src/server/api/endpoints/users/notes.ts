@@ -44,9 +44,6 @@ export const paramDef = {
 		untilDate: { type: 'integer' },
 		includeMyRenotes: { type: 'boolean', default: true },
 		withFiles: { type: 'boolean', default: false },
-		fileType: { type: 'array', items: {
-			type: 'string',
-		} },
 		excludeNsfw: { type: 'boolean', default: false },
 	},
 	required: ['userId'],
