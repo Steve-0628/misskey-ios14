@@ -11,7 +11,7 @@
 				:class="$style.img"
 				:to="notePage(image.note)"
 			>
-				<ImgWithBlurhash :hash="image.file.blurhash" :src="thumbnail(image.file)" :title="image.file.name"/>
+				<ImgWithBlurhash :hash="image.file.blurhash" :src="thumbnail(image.file)" :title="image.file.name" :forceBlurhash="image.file.isSensitive"/>
 			</MkA>
 		</div>
 		<p v-if="!fetching && images.length == 0" :class="$style.empty">{{ i18n.ts.nothing }}</p>
