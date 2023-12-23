@@ -348,8 +348,8 @@ importers:
         specifier: github:misskey-dev/summaly
         version: github.com/misskey-dev/summaly/d7f6a88aee62510a0d3ba061f515e4688c34ca48
       systeminformation:
-        specifier: 5.21.7
-        version: 5.21.7
+        specifier: 5.21.22
+        version: 5.21.22
       tinycolor2:
         specifier: 1.6.0
         version: 1.6.0
@@ -21092,8 +21092,8 @@ packages:
     resolution: {integrity: sha512-AsS729u2RHUfEra9xJrE39peJcc2stq2+poBXX8bcM08Y6g9j/i/PUzwNQqkaJde7Ntg1TO7bSREbR5sdosQ+g==}
     dev: true
 
-  /systeminformation@5.21.7:
-    resolution: {integrity: sha512-K3LjnajrazTLTD61+87DFg8IXFk5ljx6nSBqB8pQLtC1UPivAjDtTYGPZ8jaBFxcesPaCOkvLRtBq+RFscrsLw==}
+  /systeminformation@5.21.22:
+    resolution: {integrity: sha512-gNHloAJSyS+sKWkwvmvozZ1eHrdVTEsynWMTY6lvLGBB70gflkBQFw8drXXr1oEXY84+Vr9tOOrN8xHZLJSycA==}
     engines: {node: '>=8.0.0'}
     os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
     hasBin: true
