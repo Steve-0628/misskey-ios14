@@ -33,11 +33,9 @@ jobs:
         cache: 'pnpm'
     - run: corepack enable
     - if: github.event_name != 'pull_request'
-      run: pnpm i --frozen-lockfile
+      run: pnpm i --frozen-lockfile && git diff --exit-code pnpm-lock.yaml
     - if: github.event_name == 'pull_request'
       run: pnpm i --no-frozen-lockfile
-    - name: Check pnpm-lock.yaml
-      run: git diff --exit-code pnpm-lock.yaml
     - name: Copy Configure
       run: cp .github/misskey/test.yml .config/default.yml
     - name: Build

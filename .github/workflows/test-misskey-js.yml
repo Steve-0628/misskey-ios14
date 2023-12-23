@@ -33,14 +33,11 @@ jobs:
 
       - name: Install dependencies
         if: github.event_name != 'pull_request'
-        run: pnpm i --frozen-lockfile
+        run: pnpm i --frozen-lockfile && git diff --exit-code pnpm-lock.yaml
 
       - name: Install dependencies (PR)
         if: github.event_name == 'pull_request'
         run: pnpm i --no-frozen-lockfile
-
-      - name: Check pnpm-lock.yaml
-        run: git diff --exit-code pnpm-lock.yaml
 
       - name: Build
         run: pnpm --filter misskey-js build
