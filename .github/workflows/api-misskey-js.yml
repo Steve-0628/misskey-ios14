@@ -1,6 +1,10 @@
 name: API report (misskey.js)
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - steskey
+  pull_request:
 
 jobs:
   report:
