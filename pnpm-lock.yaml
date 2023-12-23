@@ -348,8 +348,8 @@ importers:
         specifier: github:misskey-dev/summaly
         version: github.com/misskey-dev/summaly/d7f6a88aee62510a0d3ba061f515e4688c34ca48
       systeminformation:
-        specifier: 5.18.7
-        version: 5.18.7
+        specifier: 5.21.7
+        version: 5.21.7
       tinycolor2:
         specifier: 1.6.0
         version: 1.6.0
@@ -8855,6 +8855,10 @@ packages:
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
     dev: true
 
+  /@types/json-schema@7.0.15:
+    resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+    dev: true
+
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
@@ -9094,6 +9098,10 @@ packages:
 
   /@types/semver@7.5.0:
     resolution: {integrity: sha512-G8hZ6XJiHnuhQKR7ZmysCeJWE08o8T0AXtk5darsCaTVsYZhhgUrq53jizaR2FvsoeCwJhlmwTjkXBY5Pn/ZHw==}
+    dev: true
+
+  /@types/semver@7.5.6:
+    resolution: {integrity: sha512-dn1l8LaMea/IjDoHNd9J52uBbInB796CDffS6VdIxvqYCPSG0V0DzHp76GpaWnlhg88uYyPbXCDIowa86ybd5A==}
     dev: true
 
   /@types/send@0.17.4:
@@ -9413,8 +9421,8 @@ packages:
       eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.45.0)
-      '@types/json-schema': 7.0.11
-      '@types/semver': 7.5.0
+      '@types/json-schema': 7.0.15
+      '@types/semver': 7.5.6
       '@typescript-eslint/scope-manager': 5.61.0
       '@typescript-eslint/types': 5.61.0
       '@typescript-eslint/typescript-estree': 5.61.0(typescript@5.1.6)
@@ -16274,7 +16282,7 @@ packages:
   /jsonfile@6.1.0:
     resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
     dependencies:
-      universalify: 2.0.0
+      universalify: 2.0.1
     optionalDependencies:
       graceful-fs: 4.2.11
     dev: true
@@ -21084,8 +21092,8 @@ packages:
     resolution: {integrity: sha512-AsS729u2RHUfEra9xJrE39peJcc2stq2+poBXX8bcM08Y6g9j/i/PUzwNQqkaJde7Ntg1TO7bSREbR5sdosQ+g==}
     dev: true
 
-  /systeminformation@5.18.7:
-    resolution: {integrity: sha512-ROxysxhjjnhWxQDkDPxCCQdeOt9IUKIGgfM0A++kqqNC+V/hAHQRshyG+5421R//DsOfXFc11pUFGpzA8YqRNQ==}
+  /systeminformation@5.21.7:
+    resolution: {integrity: sha512-K3LjnajrazTLTD61+87DFg8IXFk5ljx6nSBqB8pQLtC1UPivAjDtTYGPZ8jaBFxcesPaCOkvLRtBq+RFscrsLw==}
     engines: {node: '>=8.0.0'}
     os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
     hasBin: true
