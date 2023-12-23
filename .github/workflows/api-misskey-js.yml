@@ -25,7 +25,7 @@ jobs:
 
       - name: Install dependencies (PR)
         if: github.event_name == 'pull_request'
-        run: pnpm i
+        run: pnpm i --no-frozen-lockfile
 
       - name: Build
         run: pnpm --filter misskey-js build

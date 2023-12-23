@@ -26,7 +26,7 @@ jobs:
     - if: github.event_name != 'pull_request'
       run: pnpm i --frozen-lockfile
     - if: github.event_name == 'pull_request'
-      run: pnpm i
+      run: pnpm i --no-frozen-lockfile
 
   lint:
     needs: [pnpm_install]

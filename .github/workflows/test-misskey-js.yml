@@ -37,7 +37,7 @@ jobs:
 
       - name: Install dependencies (PR)
         if: github.event_name == 'pull_request'
-        run: pnpm i
+        run: pnpm i --no-frozen-lockfile
 
       - name: Check pnpm-lock.yaml
         run: git diff --exit-code pnpm-lock.yaml
