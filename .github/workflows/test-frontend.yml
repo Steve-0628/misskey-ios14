@@ -90,7 +90,10 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
     - run: corepack enable
-    - run: pnpm i --frozen-lockfile
+    - if: github.event_name != 'pull_request'
+      run: pnpm i --frozen-lockfile
+    - if: github.event_name == 'pull_request'
+      run: pnpm i --no-frozen-lockfile
     - name: Copy Configure
       run: cp .github/misskey/test.yml .config
     - name: Build
