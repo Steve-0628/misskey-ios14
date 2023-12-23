@@ -23,7 +23,10 @@ jobs:
         node-version-file: '.node-version'
         cache: 'pnpm'
     - run: corepack enable
-    - run: pnpm i --frozen-lockfile
+    - if: github.event_name != 'pull_request'
+      run: pnpm i --frozen-lockfile
+    - if: github.event_name == 'pull_request'
+      run: pnpm i
 
   lint:
     needs: [pnpm_install]

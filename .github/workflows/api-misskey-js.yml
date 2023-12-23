@@ -20,7 +20,12 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
+        if: github.event_name != 'pull_request'
         run: pnpm i --frozen-lockfile
+
+      - name: Install dependencies (PR)
+        if: github.event_name == 'pull_request'
+        run: pnpm i
 
       - name: Build
         run: pnpm --filter misskey-js build

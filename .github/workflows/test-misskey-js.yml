@@ -32,7 +32,12 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
+        if: github.event_name != 'pull_request'
         run: pnpm i --frozen-lockfile
+
+      - name: Install dependencies (PR)
+        if: github.event_name == 'pull_request'
+        run: pnpm i
 
       - name: Check pnpm-lock.yaml
         run: git diff --exit-code pnpm-lock.yaml
