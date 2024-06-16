@@ -158,7 +158,8 @@ export class InboxProcessorService {
 				try {
 					activity = await jsonLd.compact(activity) as IActivity;
 				} catch (e) {
-					throw new Bull.UnrecoverableError(`skip: failed to compact activity: ${e}`);
+					this.logger.error(`Failed to compact activity: ${e}`);
+					throw job.discard();
 				}
 				// TODO: 元のアクティビティと非互換な形に正規化される場合は転送をスキップする
 				// https://github.com/mastodon/mastodon/blob/664b0ca/app/services/activitypub/process_collection_service.rb#L24-L29
