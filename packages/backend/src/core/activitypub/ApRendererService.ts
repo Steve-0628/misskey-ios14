@@ -647,7 +647,7 @@ export class ApRendererService {
 		// 		},
 		// 	],
 		// }, x as T & { id: string });
-		return Object.assign({'@context': CONTEXT }, x as T & { id: string });
+		return Object.assign({ '@context': CONTEXT }, x as T & { id: string });
 	}
 
 	@bindThis
@@ -660,7 +660,6 @@ export class ApRendererService {
 		const jsonLd = this.jsonLdService.use();
 		jsonLd.debug = false;
 		activity = await jsonLd.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
-
 
 		return activity;
 	}

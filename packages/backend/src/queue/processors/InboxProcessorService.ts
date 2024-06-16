@@ -120,7 +120,7 @@ export class InboxProcessorService {
 		// また、signatureのsignerは、activity.actorと一致する必要がある
 		if (!httpSignatureValidated || authUser.user.uri !== activity.actor) {
 		// 一致しなくても、でもLD-Signatureがありそうならそっちも見る
-		const ldSignature = activity.signature
+			const ldSignature = activity.signature;
 			if (ldSignature) {
 				if (ldSignature.type !== 'RsaSignature2017') {
 					return `skip: unsupported LD-signature type ${ldSignature.type}`;
