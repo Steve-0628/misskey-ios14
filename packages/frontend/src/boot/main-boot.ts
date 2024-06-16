@@ -21,6 +21,7 @@ export async function mainBoot() {
 		!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
 		ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
 		ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
+		ui === 'td' ? defineAsyncComponent(() => import('@/ui/td.vue')) :
 		defineAsyncComponent(() => import('@/ui/universal.vue')),
 	));
 
@@ -70,7 +71,7 @@ export async function mainBoot() {
 
 	if ($i) {
 		// only add post shortcuts if logged in
-		hotkeys['p|n'] = post;
+		hotkeys['n'] = post;
 
 		defaultStore.loaded.then(() => {
 			if (defaultStore.state.accountSetupWizard !== -1) {
@@ -182,21 +183,6 @@ export async function mainBoot() {
 		}
 		miLocalStorage.setItem('lastUsed', Date.now().toString());
 
-		const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
-		const neverShowDonationInfo = miLocalStorage.getItem('neverShowDonationInfo');
-		if (neverShowDonationInfo !== 'true' && (new Date($i.createdAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
-			if (latestDonationInfoShownAt == null || (new Date(latestDonationInfoShownAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 30)))) {
-				popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {}, 'closed');
-			}
-		}
-
-		if ('Notification' in window) {
-			// 許可を得ていなかったらリクエスト
-			if (Notification.permission === 'default') {
-				Notification.requestPermission();
-			}
-		}
-
 		const main = markRaw(stream.useChannel('main', null, 'System'));
 
 		// 自分の情報が更新されたとき
@@ -249,7 +235,7 @@ export async function mainBoot() {
 	}
 
 	// shortcut
-	document.addEventListener('keydown', makeHotkey(hotkeys));
+	// document.addEventListener('keydown', makeHotkey(hotkeys));
 
 	initializeSw();
 }
