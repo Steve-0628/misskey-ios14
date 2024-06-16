@@ -7,6 +7,7 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { ui } from '@/config';
 import { unisonReload } from '@/scripts/unison-reload';
+import { deckStore } from './ui/deck/deck-store';
 
 export const navbarItemDef = reactive({
 	notifications: {
@@ -131,6 +132,7 @@ export const navbarItemDef = reactive({
 				text: 'td',
 				active: ui === 'td',
 				action: () => {
+					deckStore.set('profile', 'td-deck');
 					miLocalStorage.setItem('ui', 'td');
 					unisonReload();
 				},
