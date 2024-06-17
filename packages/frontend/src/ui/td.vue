@@ -27,11 +27,6 @@ import TDFakeChannel from './td/fakechannel.vue';
 import XCommon from './_common_/common.vue';
 import { unisonReload } from '@/scripts/unison-reload';
 
-console.log('starting TweetDeck UI...');
-console.log(DeckStore.deckStore);
-// console.log(await DeckStore.getProfiles());
-// window.document.documentElement.removeAttribute('style');
-
 if (DeckStore.deckStore.state.profile !== 'td-deck') {
 	DeckStore.deckStore.set('profile', 'td-deck');
 	unisonReload();
