@@ -61,7 +61,8 @@ html, body, #misskey_app {
 }
 .deck {
 	height: 100%;
-	width: 310px;
+	min-width: 310px;
+	overflow-x: scroll;
 }
 
 </style>

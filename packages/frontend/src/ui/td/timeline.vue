@@ -4,14 +4,14 @@
 	{{ column }}<br>
 	<div v-for="note in notes" :key="note.id">
 		<span>{{ note.user.name ?? note.user.username }} @{{ note.user.username }}</span>
-		<p>{{ note.text }}</p>
-		(ここに区切り線を入れる)<br><br>
+		<div>{{ note.text }}</div>
+		<br><br>
 	</div>
 </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onUnmounted, ref } from 'vue';
 import { Connection } from 'misskey-js/built/streaming';
 import { entities } from 'misskey-js';
 import { Column } from '../deck/deck-store';
@@ -42,5 +42,9 @@ switch (props.column.tl) {
 		alert('not supported! (TL other than home)');
 		break;
 }
+
+onUnmounted(() => {
+	connection.dispose();
+});
 
 </script>
