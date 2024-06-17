@@ -22,7 +22,7 @@ const props = defineProps<{
 	column: Column;
 }>();
 
-const notes = ref([] as entities.Note[]);
+const notes = ref<entities.Note[]>([]);
 
 const stream = useStream();
 let connection: Connection;
