@@ -1,6 +1,7 @@
 <template>
 <div>
 	hello widgets!
+	{{ column }}
 </div>
 </template>
 

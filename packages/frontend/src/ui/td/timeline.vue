@@ -1,7 +1,5 @@
 <template>
 <div>
-	hello timeline<br>
-	{{ column }}<br>
 	<div v-for="note in notes" :key="note.id">
 		<span>{{ note.user.name ?? note.user.username }} @{{ note.user.username }}</span>
 		<div>{{ note.text }}</div>
