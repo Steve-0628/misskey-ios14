@@ -1,20 +1,23 @@
 <template>
-<div>
-	{{ column }}
-	<div v-for="notification in notifications" :key="notification.id">
-		<div v-if="notification.type=='mention'">
-			Mention: {{ notification.note }}
+<Deck :items="notifications">
+	<template #header>
+		<span>Notification</span>
+	</template>
+	<template #default="{item}">
+		<div v-if="item.type=='mention'">
+			Mention: {{ item.note }}
 		</div>
 		<div v-else>
-			Unknown Notification Type: {{ notification.type }}
+			Unknown Notification Type: {{ item.type }}
 		</div>
-	</div>
-</div>
+	</template>
+</Deck>
 </template>
 
 <script setup lang="ts">
 import { onUnmounted, ref } from 'vue';
 import { entities } from 'misskey-js';
+import Deck from '../td/deck.vue';
 import { Column } from '../deck/deck-store';
 import { useStream } from '@/stream';
 import { api } from '@/os';

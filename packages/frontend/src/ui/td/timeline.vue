@@ -1,17 +1,21 @@
 <template>
-<div>
-	<div v-for="note in notes" :key="note.id">
-		<span>{{ note.user.name ?? note.user.username }} @{{ note.user.username }}</span>
-		<div>{{ note.text }}</div>
+<Deck :items="notes">
+	<template #header>
+		<span>Timeline</span>
+	</template>
+	<template #default="{ item }">
+		<span>{{ item.user.name ?? item.user.username }} @{{ item.user.username }}</span>
+		<div>{{ item.text }}</div>
 		<br><br>
-	</div>
-</div>
+	</template>
+</Deck>
 </template>
 
 <script setup lang="ts">
 import { onUnmounted, ref } from 'vue';
 import { Connection } from 'misskey-js/built/streaming';
 import { entities } from 'misskey-js';
+import Deck from '../td/deck.vue';
 import { Column } from '../deck/deck-store';
 import { useStream } from '@/stream';
 import { api } from '@/os';

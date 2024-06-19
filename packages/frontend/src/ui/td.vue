@@ -8,9 +8,14 @@
 			<TDNotifications v-else-if="column.type === 'notifications'" :key="'notification-' + column.id" class="deck" :column="column"></TDNotifications>
 			<TDWidgets v-else-if="column.type === 'widgets'" :key="'widgets-' + column.id" class="deck" :column="column"></TDWidgets>
 			<TDFakeChannel v-else-if="column.type === 'channel'" :key="'fakechannel-' + column.id" class="deck"></TDFakeChannel>
-			<div v-else :key="'other-' + column.id" class="deck">
-				{{ column }}
-			</div>
+			<TDDeckSimple v-else :key="'other-' + column.id" class="deck">
+				<template #header>
+					Error: Unknown column
+				</template>
+				<template #default>
+					{{ column }}
+				</template>
+			</TDDeckSimple>
 		</template>
 	</div>
 	<XCommon/>
@@ -19,6 +24,7 @@
 
 <script lang="ts" setup>
 import * as DeckStore from './deck/deck-store';
+import TDDeckSimple from './td/deck.simple.vue';
 import TDSidebar from './td/sidebar.vue';
 import TDTimeline from './td/timeline.vue';
 import TDNotifications from './td/notifications.vue';
