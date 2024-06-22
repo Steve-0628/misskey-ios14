@@ -1,18 +1,22 @@
 <template>
-<TDDeckSimple>
+<TDDeckSimple :index="index" :kbs="kbs">
 	<template #header>
 		Widgets
 	</template>
 	<template #default>
-		nakami ha nai desu
+		nakami ha nai desu<br/>
+		<textarea></textarea>
 	</template>
 </TDDeckSimple>
 </template>
 
 <script setup lang="ts">
 import TDDeckSimple from '../td/deck.simple.vue';
-import { Column } from '../deck/deck-store';
 const props = defineProps<{
-	column: Column;
+	index: number;
+	kbs: {
+		selectedColumn: number,
+		selectedRow: number,
+	};
 }>();
 </script>

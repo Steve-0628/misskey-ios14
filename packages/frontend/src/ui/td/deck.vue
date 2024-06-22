@@ -1,6 +1,6 @@
 <template>
 <div class="deck">
-	<TDHeader>
+	<TDHeader :index="index" :kbs="kbs">
 		<template #header>
 			<slot name="header">test header</slot>
 		</template>
@@ -22,7 +22,12 @@
 import TDHeader from './header.vue';
 import { MisskeyEntity } from '@/types/date-separated-list';
 const props = defineProps<{
-	items: MisskeyEntity[]
+	items: MisskeyEntity[];
+	index: number;
+	kbs: {
+		selectedColumn: number,
+		selectedRow: number,
+	};
 }>();
 </script>
 

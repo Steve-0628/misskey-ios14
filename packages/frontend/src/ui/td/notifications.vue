@@ -1,5 +1,5 @@
 <template>
-<Deck :items="notifications">
+<Deck :items="notifications" :index="index" :kbs="kbs">
 	<template #header>
 		<span>Notification</span>
 	</template>
@@ -24,6 +24,11 @@ import { api } from '@/os';
 
 const props = defineProps<{
 	column: Column;
+	index: number;
+	kbs: {
+		selectedColumn: number,
+		selectedRow: number,
+	};
 }>();
 
 const notifications = ref<entities.Notification[]>([]);

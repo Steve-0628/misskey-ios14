@@ -1,5 +1,5 @@
 <template>
-<Deck :items="notes">
+<Deck :items="notes" :index="index" :kbs="kbs">
 	<template #header>
 		<span>Timeline</span>
 	</template>
@@ -22,6 +22,11 @@ import { api } from '@/os';
 
 const props = defineProps<{
 	column: Column;
+	index: number;
+	kbs: {
+		selectedColumn: number,
+		selectedRow: number,
+	};
 }>();
 
 const notes = ref<entities.Note[]>([]);

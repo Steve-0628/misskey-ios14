@@ -1,6 +1,6 @@
 <template>
 <div class="deck">
-	<TDHeader>
+	<TDHeader :index="index" :kbs="kbs">
 		<template #header>
 			<slot name="header">test header</slot>
 		</template>
@@ -13,6 +13,13 @@
 
 <script setup lang="ts">
 import TDHeader from './header.vue';
+const props = defineProps<{
+	index: number;
+	kbs: {
+		selectedColumn: number,
+		selectedRow: number,
+	};
+}>();
 </script>
 
 <style scoped>
