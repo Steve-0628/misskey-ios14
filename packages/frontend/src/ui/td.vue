@@ -103,7 +103,7 @@ function hotkeyHandler(key: KeyboardEvent): void {
 
 		case 'Digit3':
 			if (DeckStore.deckStore.reactiveState.columns.value.length > 2) {
-				ckss.selectedColumn = 1;
+				ckss.selectedColumn = 2;
 				ckss.selectedRow = 0;
 			}
 			break;
