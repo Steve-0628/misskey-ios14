@@ -7,7 +7,8 @@
 	</TDHeader>
 	<div class="main">
 		<template v-if="items && items.length > 0">
-			<div v-for="item in items" :key="item.id">
+			<div v-for="(item, row) in items" :key="item.id">
+				<span v-if="index === kbs.selectedColumn && row === kbs.selectedRow">selected!!!!!!</span>
 				<slot :item="item"></slot>
 			</div>
 		</template>

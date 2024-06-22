@@ -55,18 +55,18 @@ function hotkeyHandler(key: KeyboardEvent): void {
 			// down
 			if (ckss.selectedColumn === -1) {
 				return;
-			} else if (ckss.selectedRow === -1) {
-				ckss.selectedRow = 0;
-			} else if (ckss.selectedRow > 0) {
-				ckss.selectedRow--;
+			} else {
+				ckss.selectedRow++;
 			}
 			break;
 		case 'KeyK':
 			// up
 			if (ckss.selectedColumn === -1) {
 				return;
-			} else {
-				ckss.selectedRow++;
+			} else if (ckss.selectedRow === -1) {
+				ckss.selectedRow = 0;
+			} else if (ckss.selectedRow > 0) {
+				ckss.selectedRow--;
 			}
 			break;
 		case 'KeyH':
@@ -100,10 +100,15 @@ function hotkeyHandler(key: KeyboardEvent): void {
 				ckss.selectedRow = 0;
 			}
 			break;
-
 		case 'Digit3':
 			if (DeckStore.deckStore.reactiveState.columns.value.length > 2) {
 				ckss.selectedColumn = 2;
+				ckss.selectedRow = 0;
+			}
+			break;
+		case 'Digit4':
+			if (DeckStore.deckStore.reactiveState.columns.value.length > 3) {
+				ckss.selectedColumn = 3;
 				ckss.selectedRow = 0;
 			}
 			break;
