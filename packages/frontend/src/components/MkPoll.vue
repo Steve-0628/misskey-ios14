@@ -5,7 +5,7 @@
 			<div :class="$style.bg" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
 			<span :class="$style.fg">
 				<template v-if="choice.isVoted"><i class="ti ti-check" style="margin-right: 4px; color: var(--accent);"></i></template>
-				<Mfm :text="choice.text" :plain="true"/>
+				<Mfm :text="choice.text" :plain="true" :author="author" :emojiUrls="emojiUrls"/>
 				<span v-if="showResult" style="margin-left: 4px; opacity: 0.7;">({{ i18n.t('_poll.votesCount', { n: choice.votes }) }})</span>
 			</span>
 		</li>
@@ -33,6 +33,8 @@ import { useInterval } from '@/scripts/use-interval';
 const props = defineProps<{
 	note: misskey.entities.Note;
 	readOnly?: boolean;
+	emojiUrls?: Record<string, string>;
+	author?: Misskey.entities.UserLite;
 }>();
 
 const remaining = ref(-1);
