@@ -61,9 +61,9 @@ export async function mainBoot() {
 	}
 
 	const hotkeys = {
-		'd': (): void => {
-			defaultStore.set('darkMode', !defaultStore.state.darkMode);
-		},
+		// 'd': (): void => {
+		// 	defaultStore.set('darkMode', !defaultStore.state.darkMode);
+		// },
 		's': (): void => {
 			mainRouter.push('/search');
 		},
@@ -235,7 +235,7 @@ export async function mainBoot() {
 	}
 
 	// shortcut
-	// document.addEventListener('keydown', makeHotkey(hotkeys));
+	document.addEventListener('keydown', makeHotkey(hotkeys));
 
 	initializeSw();
 }
