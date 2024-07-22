@@ -4,22 +4,15 @@
 		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
-		<MkFolder>
-			<template #label>{{ i18n.ts.options }}</template>
 
-			<MkFolder>
-				<template #label>{{ i18n.ts.specifyUser }}</template>
-				<template v-if="user" #suffix>@{{ user.username }}</template>
+		<div style="text-align: center;" class="_gaps">
+			<div v-if="user">@{{ user.username }}</div>
+			<div>
+				<MkButton v-if="user == null" primary rounded inline @click="selectUser">{{ i18n.ts.selectUser }}</MkButton>
+				<MkButton v-else danger rounded inline @click="user = null">{{ i18n.ts.remove }}</MkButton>
+			</div>
+		</div>
 
-				<div style="text-align: center;" class="_gaps">
-					<div v-if="user">@{{ user.username }}</div>
-					<div>
-						<MkButton v-if="user == null" primary rounded inline @click="selectUser">{{ i18n.ts.selectUser }}</MkButton>
-						<MkButton v-else danger rounded inline @click="user = null">{{ i18n.ts.remove }}</MkButton>
-					</div>
-				</div>
-			</MkFolder>
-		</MkFolder>
 		<div>
 			<MkButton large primary gradate rounded style="margin: 0 auto;" @click="search">{{ i18n.ts.search }}</MkButton>
 		</div>
