@@ -477,7 +477,7 @@ export class ApRendererService {
 		const mutualLinks = profile.mutualLinkSections.flatMap(section =>
 			section.mutualLinks.map(link => ({
 				type: 'PropertyValue',
-				name: (section.name ?? link.description ?? 'Link') as string,
+				name: section.name ?? link.description ?? 'Link',
 				value: `<a href="${link.url}" target="_blank">${link.description}</a>`,
 			})),
 		);
