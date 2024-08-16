@@ -478,7 +478,7 @@ export class ApRendererService {
 			section.mutualLinks.map(link => ({
 				type: 'PropertyValue',
 				name: section.name ?? link.description ?? 'Link',
-				value: `<a href="${link.url}" target="_blank">${link.description}</a>`,
+				value: `<a href="${link.url}" target="_blank">${link.description ?? link.url}</a>`,
 			})),
 		);
 
