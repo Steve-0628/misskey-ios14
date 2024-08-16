@@ -482,7 +482,7 @@ export class ApRendererService {
 			})),
 		);
 
-		const attachment = profileFields.concat(mutualLinks);
+		const attachment = mutualLinks.concat(profileFields);
 
 		const emojis = await this.getEmojis(user.emojis);
 		const apemojis = emojis.filter(emoji => !emoji.localOnly).map(emoji => this.renderEmoji(emoji));
