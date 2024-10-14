@@ -8,7 +8,6 @@
 			</MkSelect>
 			<div>{{ selectedOptionLabel }}: <MkTime :key="timeKey" :time="world[selectedOption]" mode="absolute"/></div>
 			<div class="_gaps_s">
-				<MkButton @click="addToFavorites(id, items)">💜{{ world.favorites }}</MkButton>
 				<div v-if="world.featured">featured</div>
 				heat: {{ world.heat }}, popularity: {{ world.popularity }}<br>
 				<div v-if="world.namespace">namespace: {{ world.namespace }}</div>
@@ -37,10 +36,9 @@
 <script lang="ts" setup>
 import { computed, ref, shallowRef } from 'vue';
 import VrchatUser from '@/components/VrcUser.user.vue';
-import { User, World, fetchDataWithAuth, addToFavorites } from '@/scripts/vrchat-api';
+import { User, World, fetchDataWithAuth } from '@/scripts/vrchat-api';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkSelect from '@/components/MkSelect.vue';
-import MkButton from '@/components/MkButton.vue';
 import { ArrayElementType } from '@/types/custom-utilities';
 
 const props = defineProps<{
@@ -51,9 +49,9 @@ const world = shallowRef<World>();
 const author = shallowRef<User>();
 
 // eslint-disable-next-line vue/no-setup-props-destructure
-fetchDataWithAuth('world', props.id).then(async wrld => {
+fetchDataWithAuth('world', { world_id: props.id }).then(async wrld => {
 	world.value = wrld;
-	if (wrld) author.value = await fetchDataWithAuth('user', wrld.authorId);
+	if (wrld) author.value = await fetchDataWithAuth('user', { user_id: wrld.authorId });
 });
 
 const selectedOption = ref<ArrayElementType<typeof options>['value']>('created_at');
@@ -70,8 +68,6 @@ const selectedOptionLabel = computed(() =>
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	options.find(opt => opt.value === selectedOption.value)!.label,
 );
-
-const items = ['worlds1', 'worlds2', 'worlds3', 'worlds4'] as const;
 
 definePageMetadata({
 	title: 'VRChat World',

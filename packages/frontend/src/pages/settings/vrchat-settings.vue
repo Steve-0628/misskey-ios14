@@ -16,7 +16,8 @@
 				<MkButton @click="auth">決定</MkButton>
 			</span>
 			<span v-else class="_gaps_s">
-				<MkInput v-for="text in token.split(':')" :key="text" :modelValue="text" readonly/>
+				<MkInput v-model="token" readonly/>
+				<MkInput v-model="twofactortype" readonly/>
 				<MkInput v-model="twofactor" type="text" placeholder="2FAコード"/>
 				<MkButton @click="do2fa">決定</MkButton>
 			</span>
@@ -24,9 +25,6 @@
 			<MkInput v-model="VRChatAuth" type="text">
 				<template #caption>AuthTokenのキーとなります。複数のクライアントで同じ文字列を入力することで同一のトークンを使用することが可能です。任意の文字列を入力してください。</template>
 			</MkInput>
-			<MkButton @click="fetchData('favorites/refresh', defaultStore.state.VRChatAuth).then(r => r && toast('✅'))">
-				お気に入りフレンドリストの再取得を要求
-			</MkButton>
 		</div>
 	</FormSection>
 </div>
@@ -39,20 +37,29 @@ import MkInfo from '@/components/MkInfo.vue';
 import FormSection from '@/components/form/section.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import { alert as miAlert, toast } from '@/os';
-import { fetchData } from '@/scripts/vrchat-api';
+import { alert as miAlert } from '@/os';
+import { fetchData, fetchDataWithAuth } from '@/scripts/vrchat-api';
+
+const VRChatAuth = computed<string>(defaultStore.makeGetterSetter('VRChatAuth'));
+const VRChatURL = computed<string>(defaultStore.makeGetterSetter('VRChatURL'));
 
 const username = ref('');
 const password = ref('');
 const token = ref('');
 const twofactor = ref('');
+const twofactortype = ref('');
 
 async function auth(): Promise<void> {
 	if (!username.value || !password.value) return;
 
-	const res = await fetchData('auth', `${username.value}:${password.value}`);
+	const body = {
+		username: username.value,
+		password: password.value,
+	};
+	const res = await fetchData('auth', body);
 	if (!res) return;
-	token.value = res;
+	token.value = res.token;
+	twofactortype.value = res.auth_type;
 
 	miAlert({
 		type: 'info',
@@ -63,7 +70,13 @@ async function auth(): Promise<void> {
 async function do2fa(): Promise<void> {
 	if (!twofactor.value || !VRChatAuth.value) return;
 
-	const res = await fetchData('twofactor', `${token.value}:${twofactor.value}:${defaultStore.state.VRChatAuth}`);
+	const body = {
+		auth: VRChatAuth.value,
+		token: token.value,
+		two_factor_code: twofactor.value,
+		two_factor_type: twofactortype.value,
+	};
+	const res = await fetchDataWithAuth('twofactor', body);
 	if (!res) return;
 	defaultStore.set('VRChatAuth', res);
 
@@ -72,8 +85,5 @@ async function do2fa(): Promise<void> {
 		text: '二段階認証が完了しました。',
 	});
 }
-
-const VRChatAuth = computed<string>(defaultStore.makeGetterSetter('VRChatAuth'));
-const VRChatURL = computed<string>(defaultStore.makeGetterSetter('VRChatURL'));
 
 </script>

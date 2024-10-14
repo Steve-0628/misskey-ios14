@@ -1,6 +1,6 @@
 <template>
-<component :is="friend.id ? 'MkA' : 'span'" class="_noSelect" :class="[$style.root, { [$style.square]: defaultStore.state.squareAvatars }]" :to="`/vrchat/${friend.id}`">
-	<img :class="$style.inner" :src="friend.currentAvatarThumbnailImageUrl" decoding="async"/>
+<component :is="friend.id ? 'MkA' : 'span'" class="_noSelect" :class="[$style.root, { [$style.square]: defaultStore.state.squareAvatars }]" :to="`/vrchat/user/${friend.id}`">
+	<img :class="$style.inner" :src="friend.userIcon ?? friend.currentAvatarThumbnailImageUrl" decoding="async"/>
 	<div v-if="friend.status" v-tooltip="friend.status" :class="$style.indicator" :style="`background:${props.friend.undetermined?`linear-gradient(225deg,${style} 50%,gray 50%)`:style}`"/>
 </component>
 </template>

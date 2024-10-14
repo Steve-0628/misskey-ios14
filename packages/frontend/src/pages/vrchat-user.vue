@@ -3,8 +3,8 @@
 	<VrchatUser :id="id" :user="user"/>
 	<div v-if="instance" class="_gaps_m">
 		<div v-if="user.location === 'traveling'">移動中</div>
-		<MkA :to="`/world/${user.location.split(':')[0]}`" style="font-size: 1.5em">{{ instance.name }} ({{ instance.userCount }})</MkA>
-		<MkA v-if="instance.ownerId?.startsWith('usr')" :to="`/vrchat/${instance.ownerId}`">
+		<MkA :to="`/vrchat/world/${user.location.split(':')[0]}`" style="font-size: 1.5em">{{ instance.name }} ({{ instance.userCount }})</MkA>
+		<MkA v-if="instance.ownerId?.startsWith('usr')" :to="`/vrchat/user/${instance.ownerId}`">
 			<div v-if="owner">
 				<VrcAvatar :friend="owner" :class="$style.avatar_host"/>{{ owner.displayName }}
 			</div>
@@ -49,20 +49,20 @@ const instance = shallowRef<Instance>();
 const owner = shallowRef<User>();
 
 // eslint-disable-next-line vue/no-setup-props-destructure
-fetchDataWithAuth('user', props.id).then(async usr => {
+fetchDataWithAuth('user', { user_id: props.id } ).then(async usr => {
 	if (!usr) return;
 	user.value = usr;
 	if (usr.location.startsWith('wrld')) {
-		instance.value = await fetchDataWithAuth('instance', usr.location);
+		instance.value = await fetchDataWithAuth('instance', { instance_id: usr.location } );
 	} else if (usr.location === 'traveling') {
-		if (usr.travelingToLocation) instance.value = await fetchDataWithAuth('instance', usr.travelingToLocation);
+		if (usr.travelingToLocation) instance.value = await fetchDataWithAuth('instance', { instance_id: usr.travelingToLocation } );
 	}
 
 	if (!instance.value || instance.value.ownerId === props.id || !(instance.value.ownerId?.startsWith('usr'))) {
 		return;
 	}
 
-	owner.value = await fetchDataWithAuth('user', instance.value.ownerId);
+	owner.value = await fetchDataWithAuth('user', { user_id: instance.value.ownerId });
 });
 
 definePageMetadata({

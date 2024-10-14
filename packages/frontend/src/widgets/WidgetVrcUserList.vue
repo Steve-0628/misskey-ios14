@@ -40,7 +40,7 @@ import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/MkContainer.vue';
 import { useInterval } from '@/scripts/use-interval';
-import { fetchData, Friend } from '@/scripts/vrchat-api';
+import { fetchDataWithAuth, Friend } from '@/scripts/vrchat-api';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import VRCAvatar from '@/components/VrcAvatar.vue';
@@ -77,7 +77,7 @@ const friends = shallowRef<{
 async function fetch(): Promise<void> {
 	if (!defaultStore.state.VRChatAuth) return;
 
-	friends.value = await fetchData(widgetProps.onlyFavorited ? 'favfriends' : 'friends', defaultStore.state.VRChatAuth);
+	friends.value = await fetchDataWithAuth('friends', {});
 }
 
 useInterval(fetch, 1000 * 60, {

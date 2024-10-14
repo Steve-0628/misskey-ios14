@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<{
 const group = shallowRef<Group>();
 
 // eslint-disable-next-line vue/no-setup-props-destructure
-fetchDataWithAuth('group', props.id).then(r => { group.value = r; });
+fetchDataWithAuth('group', { group_id: props.id }).then(r => { group.value = r; });
 </script>
 
 <style lang="scss" module>

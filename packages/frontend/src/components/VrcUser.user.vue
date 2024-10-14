@@ -7,12 +7,6 @@
 	</span>
 	<a v-else :class="$style.title" :href="`https://vrchat.com/home/user/${id}`" target="_blank" rel="noopener">{{ user.displayName }}</a>
 </span>
-<span v-if="user.isFriend">
-	フレンド ({{ user.rank }})
-</span>
-<span v-else style="position:relative">
-	{{ user.rank }}<VrcFollowButton :id="id" :class="$style.follow" @success="is => toast(`フレンド申請を${is ? '送信' : '解除'}しました。`)"/>
-</span>
 <div v-if="user.bio || user.bioLinks.length" :class="$style.content" class="_gaps_m">
 	<div v-if="user.bio"><template v-for="text in user.bio.split('\n')" :key="text">{{ text }}<br></template></div>
 	<div v-for="bioLink in user.bioLinks" :key="bioLink">
@@ -24,8 +18,6 @@
 
 <script lang="ts" setup>
 import VrcAvatar from '@/components/VrcAvatar.vue';
-import VrcFollowButton from '@/components/VrcFollowButton.vue';
-import { toast } from '@/os';
 import { User } from '@/scripts/vrchat-api';
 
 defineProps<{

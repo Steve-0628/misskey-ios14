@@ -1,5 +1,5 @@
 <template>
-<MkA v-adaptive-bg :to="`/vrchat/${user.id}`" :class="[$style.root, { yellow: user.isFriend }]">
+<MkA v-adaptive-bg :to="`/vrchat/user/${user.id}`" :class="[$style.root, { yellow: user.isFriend }]">
 	<VrcAvatar class="avatar" :friend="user"/>
 	<div class="body">
 		<span class="name">{{ user.displayName }}</span>

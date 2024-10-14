@@ -45,11 +45,11 @@ export const routes = [{
 	path: '/instance-info/:host',
 	component: page(() => import('./pages/instance-info.vue')),
 }, {
-	path: '/vrchat/:id?',
+	path: '/vrchat/user/:id?',
 	name: 'vrchat',
 	component: page(() => import('./pages/vrchat.vue')),
 }, {
-	path: '/world/:id',
+	path: '/vrchat/world/:id',
 	name: 'vrcWorld',
 	component: page(() => import('./pages/vrchat-world.vue')),
 }, {

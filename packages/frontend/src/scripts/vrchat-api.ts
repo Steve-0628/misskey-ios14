@@ -1,20 +1,21 @@
 import { defaultStore } from '@/store';
-import { alert as miAlert, select, toast } from '@/os';
+import { alert as miAlert } from '@/os';
 
-type ApiResponse<T> = { Success: T } | { Error: string };
+type ApiResponse<T> = T | { Error: string };
 
 type VrcEndPoints = VrcEndPointsMultiArgs & {
-	'auth': string;
+	'auth': {token: string, auth_type: string};
 	'twofactor': string;
-	'friends': {
-		'public': Friend[];
-		'private': Friend[];
-	};
-	'favfriends': VrcEndPoints['friends'];
 	'favorites/refresh': true;
 }
 
 type VrcEndPointsMultiArgs = {
+	'friends': {
+		'public': Friend[];
+		'private': Friend[];
+	};
+	// 'favfriends': VrcEndPoints['friends'];
+	'twofactor': string;
 	'instance': Instance;
 	'user': User;
 	'search_user': HitUsers;
@@ -25,13 +26,16 @@ type VrcEndPointsMultiArgs = {
 	'favorites': true;
 }
 
-export async function fetchData<E extends keyof VrcEndPoints, T extends VrcEndPoints[E]>(url: E, body: string): Promise<T | undefined> {
+export async function fetchData<E extends keyof VrcEndPoints, T extends VrcEndPoints[E]>(url: E, body: object): Promise<T | undefined> {
 	const res: ApiResponse<T> = await fetch(defaultStore.state.VRChatURL + url, {
 		method: 'POST',
-		body,
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(body),
 	}).then(r => r.json());
 
-	if ('Error' in res) {
+	if (typeof res === 'object' && 'Error' in res) {
 		miAlert({
 			type: 'error',
 			text: res.Error.includes('Missing Credentials') ? 'トークンの有効期限が切れています。' : res.Error,
@@ -39,26 +43,11 @@ export async function fetchData<E extends keyof VrcEndPoints, T extends VrcEndPo
 		return;
 	}
 
-	return res.Success;
+	return res;
 }
 
-export function fetchDataWithAuth<E extends keyof VrcEndPointsMultiArgs>(url: E, body: string): Promise<VrcEndPointsMultiArgs[E] | undefined> {
-	return fetchData(url, defaultStore.state.VRChatAuth + ':' + body);
-}
-
-export function addToFavorites(favoriteId: string, values: readonly string[]): void {
-	const items = values.map(value => (
-		{
-			value,
-			text: value,
-		}
-	));
-
-	select({ title: 'お気に入りするグループ', items }).then(res => {
-		if (res.canceled) return;
-		fetchDataWithAuth('favorites', `${values[0] === 'group_0' ? 'friend' : values[0].slice(0, -2)}:${favoriteId}:${res.result}`)
-			.then(ok => ok && toast('✅'));
-	});
+export function fetchDataWithAuth<E extends keyof VrcEndPointsMultiArgs>(url: E, body: object): Promise<VrcEndPointsMultiArgs[E] | undefined> {
+	return fetchData(url, { auth: defaultStore.state.VRChatAuth, ...body });
 }
 
 export type Friend = Pick<User, 'currentAvatarThumbnailImageUrl' | 'location' | 'status'> & {
