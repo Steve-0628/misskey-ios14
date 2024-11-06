@@ -1,6 +1,6 @@
 <template>
 <component :is="friend.id ? 'MkA' : 'span'" class="_noSelect" :class="[$style.root, { [$style.square]: defaultStore.state.squareAvatars }]" :to="`/vrchat/user/${friend.id}`">
-	<img :class="$style.inner" :src="friend.userIcon ?? friend.currentAvatarThumbnailImageUrl" decoding="async"/>
+	<img :class="$style.inner" :src="avatarUrl" decoding="async"/>
 	<div v-if="friend.status" v-tooltip="friend.status" :class="$style.indicator" :style="`background:${props.friend.undetermined?`linear-gradient(225deg,${style} 50%,gray 50%)`:style}`"/>
 </component>
 </template>
@@ -10,6 +10,7 @@ import { computed } from 'vue';
 import { defaultStore } from '@/store';
 import { Friend } from '@/scripts/vrchat-api';
 import { SomeRequired } from '@/types/custom-utilities';
+import { getProxiedImageUrl } from '@/scripts/media-proxy';
 
 const props = defineProps<{
 	friend: SomeRequired<Partial<Friend>, 'currentAvatarThumbnailImageUrl'>
@@ -25,6 +26,11 @@ const style = computed(() => {
 		case 'busy': return 'rgb(113, 5, 5)';
 		default: return 'black';
 	}
+});
+
+const avatarUrl = computed(() => {
+	const srcUrl = props.friend.userIcon ?? props.friend.currentAvatarThumbnailImageUrl;
+	return getProxiedImageUrl(srcUrl);
 });
 
 </script>
