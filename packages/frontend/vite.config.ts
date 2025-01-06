@@ -1,10 +1,12 @@
 import path from 'path';
+import fs from 'fs';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
 import { type UserConfig, defineConfig } from 'vite';
 // @ts-expect-error https://github.com/sxzz/unplugin-vue-macros/issues/257#issuecomment-1410752890
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite';
 
+import vitePluginPug from './plugins/vite-plugin-pug.js';
 import locales from '../../locales';
 import generateDTS from '../../locales/generateDTS';
 import meta from '../../package.json';
@@ -42,12 +44,27 @@ function toBase62(n: number): string {
 	return result;
 }
 
+const isBuild = process.argv.includes('build');
+const clientManifestExists = fs.existsSync(__dirname + '/../../built/_vite_/manifest.json') && isBuild;
+const clientManifest = clientManifestExists ?
+	JSON.parse(fs.readFileSync(`${__dirname}/../../built/_vite_/manifest.json`, 'utf-8'))
+	: { 'src/_boot_.ts': { file: 'src/_boot_.ts' } };
+const pugLocals = {
+	config: {
+		clientEntry: clientManifest['src/_boot_.ts'],
+	},
+	serverErrorImageUrl: 'https://xn--931a.moe/assets/error.jpg',
+	infoImageUrl: 'https://xn--931a.moe/assets/info.jpg',
+	notFoundImageUrl: 'https://xn--931a.moe/assets/not-found.jpg',
+};
+
 export function getConfig(): UserConfig {
 	return {
 		base: '/vite/',
 
 		server: {
 			port: 5173,
+			host: '0.0.0.0',
 		},
 
 		plugins: [
@@ -71,6 +88,16 @@ export function getConfig(): UserConfig {
 				name: 'locale:generateDTS',
 				buildStart: generateDTS,
 			},
+			vitePluginPug(
+				{
+					build: {
+						locals: pugLocals,
+					},
+					serve: {
+						locals: pugLocals,
+					},
+				},
+			),
 		],
 
 		resolve: {
@@ -125,6 +152,10 @@ export function getConfig(): UserConfig {
 			rollupOptions: {
 				input: {
 					app: './src/_boot_.ts',
+					base: './src/web/views/base.pug',
+					bios: './src/web/views/bios.pug',
+					error: './src/web/views/error.pug',
+					flush: './src/web/views/flush.pug',
 				},
 				output: {
 					manualChunks: {
