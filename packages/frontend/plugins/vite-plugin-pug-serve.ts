@@ -47,32 +47,33 @@ export const vitePluginPugServe = ({
 					fullReqPath += 'index.html';
 				}
 
-				if (fullReqPath.endsWith('.html')) {
-					if (fs.existsSync(fullReqPath)) {
-						return next();
-					}
-
-					const pugPath = `src/web/views/${
-						fullReqPath.slice(
-							Math.min(fullReqPath.length, fullReqPath.lastIndexOf('/')),
-							Math.max(0, fullReqPath.lastIndexOf('.')),
-						) ||
-            fullReqPath
-					}.pug`;
-					if (!fs.existsSync(pugPath)) {
-						return send(req, res, '404 Not Found', 'html', {});
-					}
-
-					const html = await transformPugToHtml(
-						server,
-						pugPath,
-						options,
-						locals,
-					);
-					return send(req, res, html, 'html', {});
-				} else {
+				// if (fullReqPath.endsWith('.html')) {
+				if (fs.existsSync(fullReqPath)) {
 					return next();
 				}
+
+				const pugPath = `src/web/views/${
+					fullReqPath.slice(
+						Math.max(0, fullReqPath.lastIndexOf('/')),
+						Math.max(0, fullReqPath.lastIndexOf('.')),
+					) ||
+            fullReqPath
+				}.pug`;
+				if (!fs.existsSync(pugPath)) {
+					return next();
+					// return send(req, res, '404 Not Found', 'html', {});
+				}
+
+				const html = await transformPugToHtml(
+					server,
+					pugPath,
+					options,
+					locals,
+				);
+				return send(req, res, html, 'html', {});
+				// } else {
+				// 	return next();
+				// }
 			});
 		},
 	};
