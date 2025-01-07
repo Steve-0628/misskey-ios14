@@ -30,11 +30,14 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
+      - id: lowercase
+        uses: ASzc/change-string-case-action@v2
+        with:
+          string: XyZzY
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/steskey-front:latest
+          tags: ghcr.io/${{ steps.lowercase.outputs.lowercase }}/steskey-front:latest
