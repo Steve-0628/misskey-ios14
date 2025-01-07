@@ -33,7 +33,7 @@ jobs:
       - id: lowercase
         uses: ASzc/change-string-case-action@v2
         with:
-          string: XyZzY
+          string: ${{ github.repository }}
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6
